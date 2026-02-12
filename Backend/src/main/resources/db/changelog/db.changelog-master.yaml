@@ -1,0 +1,9 @@
+databaseChangeLog:
+  - include:
+      file: db/changelog/users-changelog.yaml
+  - include:
+      file: db/changelog/subreddits-changelog.yaml
+  - include:
+      file: db/changelog/posts-changelog.yaml
+  - include:
+      file: db/changelog/comments-changelog.yaml
