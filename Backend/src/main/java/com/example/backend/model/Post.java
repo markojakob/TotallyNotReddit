@@ -56,5 +56,11 @@ public class Post {
         this.name = name;
     }
 
+    public Subreddit getSubreddit() {
+        return subreddit;
+    }
 
+    public void setSubreddit(Subreddit subreddit) {
+        this.subreddit = subreddit;
+    }
 }

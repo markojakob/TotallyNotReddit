@@ -1,9 +1,16 @@
 databaseChangeLog:
   - include:
-      file: db/changelog/users-changelog.yaml
+      file: users-changelog.yaml
+      relativeToChangelogFile: true
+
   - include:
-      file: db/changelog/subreddits-changelog.yaml
+      file: subreddits-changelog.yaml
+      relativeToChangelogFile: true
+
   - include:
-      file: db/changelog/posts-changelog.yaml
+      file: posts-changelog.yaml
+      relativeToChangelogFile: true
+
   - include:
-      file: db/changelog/comments-changelog.yaml
+      file: comments-changelog.yaml
+      relativeToChangelogFile: true

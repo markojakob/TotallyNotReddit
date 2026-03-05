@@ -1,0 +1,14 @@
+package com.example.backend.repository;
+
+import com.example.backend.model.User;
+import jakarta.validation.constraints.NotNull;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface UserRepository extends JpaRepository<User, Long> {
+
+    boolean existsByUsernameAndIdNot(@NotNull String username, Long id);
+
+    boolean existsByEmailAndIdNot(String email, Long id);
+}

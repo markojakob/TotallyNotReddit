@@ -2,11 +2,6 @@ databaseChangeLog:
   - changeSet:
       id: 1
       author: markj
-      preConditions:
-        onFail: MARK_RAN
-        not:
-          tableExists:
-            tableName: comments
       changes:
         - createTable:
             tableName: comments
