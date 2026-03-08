@@ -1,6 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: 1
+      id: 004-create-comments
       author: markj
       changes:
         - createTable:
@@ -14,8 +14,8 @@ databaseChangeLog:
                     primaryKey: true
                     nullable: false
               - column:
-                  name: content
-                  type: TEXT
+                  name: post_id
+                  type: BIGINT
                   constraints:
                     nullable: false
               - column:
@@ -24,19 +24,38 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
-                  name: post_id
+                  name: parent_comment_id
                   type: BIGINT
+              - column:
+                  name: content
+                  type: TEXT
                   constraints:
                     nullable: false
-        - addForeignKeyConstraint:
-            baseTableName: comments
-            baseColumnNames: user_id
-            referencedTableName: users
-            referencedColumnNames: id
-            constraintName: fk_comments_user
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+              - column:
+                  name: score
+                  type: INT
+                  defaultValueNumeric: 0
         - addForeignKeyConstraint:
             baseTableName: comments
             baseColumnNames: post_id
             referencedTableName: posts
             referencedColumnNames: id
-            constraintName: fk_comments_post
+            constraintName: fk_comment_post
+        - addForeignKeyConstraint:
+            baseTableName: comments
+            baseColumnNames: user_id
+            referencedTableName: users
+            referencedColumnNames: id
+            constraintName: fk_comment_user
+        - addForeignKeyConstraint:
+            baseTableName: comments
+            baseColumnNames: parent_comment_id
+            referencedTableName: comments
+            referencedColumnNames: id
+            constraintName: fk_comment_parent

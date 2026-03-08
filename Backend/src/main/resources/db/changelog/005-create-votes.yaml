@@ -1,0 +1,62 @@
+databaseChangeLog:
+  - changeSet:
+      id: 005-create-votes
+      author: markj
+      changes:
+        - createTable:
+            tableName: votes
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: post_id
+                  type: BIGINT
+              - column:
+                  name: comment_id
+                  type: BIGINT
+              - column:
+                  name: vote_value
+                  type: INT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: votes
+            baseColumnNames: user_id
+            referencedTableName: users
+            referencedColumnNames: id
+            constraintName: fk_vote_user
+        - addForeignKeyConstraint:
+            baseTableName: votes
+            baseColumnNames: post_id
+            referencedTableName: posts
+            referencedColumnNames: id
+            constraintName: fk_vote_post
+        - addForeignKeyConstraint:
+            baseTableName: votes
+            baseColumnNames: comment_id
+            referencedTableName: comments
+            referencedColumnNames: id
+            constraintName: fk_vote_comment
+        - addUniqueConstraint:
+            columnNames: user_id, post_id
+            tableName: votes
+            constraintName: uq_vote_user_post
+        - addUniqueConstraint:
+            columnNames: user_id, comment_id
+            tableName: votes
+            constraintName: uq_vote_user_comment

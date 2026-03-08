@@ -1,6 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: 1
+      id: 003-create-posts
       author: markj
       changes:
         - createTable:
@@ -15,7 +15,7 @@ databaseChangeLog:
                     nullable: false
               - column:
                   name: title
-                  type: VARCHAR(200)
+                  type: VARCHAR(300)
                   constraints:
                     nullable: false
               - column:
@@ -23,6 +23,9 @@ databaseChangeLog:
                   type: TEXT
                   constraints:
                     nullable: false
+              - column:
+                  name: media_url
+                  type: VARCHAR(500)
               - column:
                   name: user_id
                   type: BIGINT
@@ -33,15 +36,25 @@ databaseChangeLog:
                   type: BIGINT
                   constraints:
                     nullable: false
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+              - column:
+                  name: score
+                  type: INT
+                  defaultValueNumeric: 0
         - addForeignKeyConstraint:
             baseTableName: posts
             baseColumnNames: user_id
             referencedTableName: users
             referencedColumnNames: id
-            constraintName: fk_posts_user
+            constraintName: fk_post_user
         - addForeignKeyConstraint:
             baseTableName: posts
             baseColumnNames: subreddit_id
             referencedTableName: subreddits
             referencedColumnNames: id
-            constraintName: fk_posts_subreddit
+            constraintName: fk_post_subreddit

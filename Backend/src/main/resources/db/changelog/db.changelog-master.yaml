@@ -1,16 +1,11 @@
 databaseChangeLog:
   - include:
-      file: users-changelog.yaml
-      relativeToChangelogFile: true
-
+      file: db/changelog/001-create-users.yaml
   - include:
-      file: subreddits-changelog.yaml
-      relativeToChangelogFile: true
-
+      file: db/changelog/002-create-subreddits.yaml
   - include:
-      file: posts-changelog.yaml
-      relativeToChangelogFile: true
-
+      file: db/changelog/003-create-posts.yaml
   - include:
-      file: comments-changelog.yaml
-      relativeToChangelogFile: true
+      file: db/changelog/004-create-comments.yaml
+  - include:
+      file: db/changelog/005-create-votes.yaml

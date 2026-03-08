@@ -1,0 +1,43 @@
+databaseChangeLog:
+  - changeSet:
+      id: 002-create-subreddits
+      author: markj
+      changes:
+        - createTable:
+            tableName: subreddits
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: description
+                  type: TEXT
+              - column:
+                  name: created_by
+                  type: BIGINT
+              - column:
+                  name: rules
+                  type: TEXT
+              - column:
+                  name: is_private
+                  type: BOOLEAN
+                  defaultValueBoolean: false
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+        - addForeignKeyConstraint:
+            baseTableName: subreddits
+            baseColumnNames: created_by
+            referencedTableName: users
+            referencedColumnNames: id
+            constraintName: fk_subreddit_created_by
