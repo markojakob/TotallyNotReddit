@@ -2,6 +2,7 @@ package com.example.backend.service;
 
 import com.example.backend.model.Subreddit;
 import com.example.backend.repository.SubredditRepository;
+import com.example.backend.repository.UserRepository;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -12,9 +13,11 @@ import java.util.concurrent.CompletableFuture;
 public class SubredditService {
 
     private final SubredditRepository subredditRepository;
+    private final UserRepository userRepository;
 
-    public SubredditService(SubredditRepository subredditRepository) {
+    public SubredditService(SubredditRepository subredditRepository, UserRepository userRepository) {
         this.subredditRepository = subredditRepository;
+        this.userRepository = userRepository;
     }
 
     @Async
@@ -31,7 +34,11 @@ public class SubredditService {
     }
 
     @Async
-    public CompletableFuture<Subreddit> createAsync(Subreddit subreddit) {
+    public CompletableFuture<Subreddit> createAsync(Subreddit subreddit, Long userId) {
+
+        var user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        subreddit.setCreatedBy(user);
         return CompletableFuture.completedFuture(subredditRepository.save(subreddit));
     }
 

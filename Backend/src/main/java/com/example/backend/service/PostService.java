@@ -2,6 +2,7 @@ package com.example.backend.service;
 
 import com.example.backend.model.Post;
 import com.example.backend.repository.PostRepository;
+import com.example.backend.repository.SubredditRepository;
 import com.example.backend.repository.UserRepository;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -14,10 +15,12 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+    private final SubredditRepository subredditRepository;
 
-    public PostService(PostRepository postRepository, UserRepository userRepository) {
+    public PostService(PostRepository postRepository, UserRepository userRepository, SubredditRepository subredditRepository) {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
+        this.subredditRepository = subredditRepository;
     }
 
     @Async
@@ -34,9 +37,13 @@ public class PostService {
     }
 
     @Async
-    public CompletableFuture<Post> createAsync(Post post, Long userId) {
-        var user = userRepository.findById(userId);
-
+    public CompletableFuture<Post> createAsync(Post post, Long userId, Long subredditId) {
+        var user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        var subreddit = subredditRepository.findById(subredditId)
+                .orElseThrow(() -> new RuntimeException("Subreddit not found"));
+        post.setUser(user);
+        post.setSubreddit(subreddit);
         return CompletableFuture.completedFuture(postRepository.save(post));
     }
 
