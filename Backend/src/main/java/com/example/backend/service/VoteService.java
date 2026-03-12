@@ -39,20 +39,20 @@ public class VoteService {
     }
 
     @Transactional
-    public Vote createPostVote(Long postId, Long userId, int voteValue) {
+    public Vote createPostVote(Long postId, int voteValue, Long userid) {
+        User user = userRepository.findById(userid)
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new RuntimeException("Post not found"));
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
-        Optional<Vote> existingVote = voteRepository.findByUserAndPost(user, post);
+        // Check if this user has already voted on this post
+        Optional<Vote> existingVote = voteRepository.findByUserAndPost(user,post );
 
         if (existingVote.isPresent()) {
-
             Vote oldVote = existingVote.get();
 
+            // Adjust post score
             int difference = voteValue - oldVote.getVoteValue();
             post.setScore(post.getScore() + difference);
 
@@ -64,15 +64,16 @@ public class VoteService {
             return oldVote;
         }
 
+        // Create new vote
         Vote vote = new Vote();
-        vote.setUser(user);
         vote.setPost(post);
+        vote.setUser(user);
         vote.setVoteValue(voteValue);
 
+        // Update post score
         post.setScore(post.getScore() + voteValue);
 
         postRepository.save(post);
-
         return voteRepository.save(vote);
     }
 

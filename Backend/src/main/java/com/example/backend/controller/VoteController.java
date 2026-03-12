@@ -1,5 +1,8 @@
 package com.example.backend.controller;
 
+import com.example.backend.Dto.VoteDto;
+import com.example.backend.Dto.VoteRequest;
+import com.example.backend.Mapper.VoteMapper;
 import com.example.backend.model.Vote;
 import com.example.backend.service.VoteService;
 import org.springframework.http.ResponseEntity;
@@ -19,29 +22,21 @@ public class VoteController {
     }
 
     @GetMapping("/{id}")
-    public CompletableFuture<ResponseEntity<Vote>> getVote(@PathVariable Long id) {
+    public CompletableFuture<ResponseEntity<VoteDto>> getVote(@PathVariable Long id) {
         return voteService.getAsync(id)
-                .thenApply(ResponseEntity::ok);
+                .thenApply(vote -> ResponseEntity.ok(VoteMapper.toDto(vote)));
     }
 
     @GetMapping
-    public CompletableFuture<ResponseEntity<List<Vote>>> listVotes() {
+    public CompletableFuture<ResponseEntity<List<VoteDto>>> listVotes() {
         return voteService.listAsync()
-                .thenApply(ResponseEntity::ok);
+                .thenApply(votes ->
+                        ResponseEntity.ok(
+                                votes.stream()
+                                        .map(VoteMapper::toDto)
+                                        .toList()
+                        )
+                );
     }
 
-    @PostMapping("/{postId}/vote")
-    public ResponseEntity<Vote> voteOnPost(
-            @PathVariable Long postId,
-            @RequestParam Long userId,
-            @RequestBody Vote vote) {
-
-        Vote result = voteService.createPostVote(
-                postId,
-                userId,
-                vote.getVoteValue()
-        );
-
-        return ResponseEntity.ok(result);
-    }
 }

@@ -1,6 +1,9 @@
 package com.example.backend.service;
 
+import com.example.backend.Dto.PostDto;
 import com.example.backend.model.Post;
+import com.example.backend.model.Subreddit;
+import com.example.backend.model.User;
 import com.example.backend.repository.PostRepository;
 import com.example.backend.repository.SubredditRepository;
 import com.example.backend.repository.UserRepository;
@@ -37,13 +40,22 @@ public class PostService {
     }
 
     @Async
-    public CompletableFuture<Post> createAsync(Post post, Long userId, Long subredditId) {
-        var user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-        var subreddit = subredditRepository.findById(subredditId)
+    public CompletableFuture<Post> createAsync(PostDto dto) {
+
+        Subreddit subreddit = subredditRepository.findById(dto.getSubredditId())
                 .orElseThrow(() -> new RuntimeException("Subreddit not found"));
-        post.setUser(user);
+
+        User user = userRepository.findById(dto.getUserId())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        Post post = new Post();
+        post.setTitle(dto.getTitle());
+        post.setContent(dto.getContent());
+        post.setMediaUrl(dto.getMediaUrl());
+        post.setScore(0);
         post.setSubreddit(subreddit);
+        post.setUser(user);
+
         return CompletableFuture.completedFuture(postRepository.save(post));
     }
 

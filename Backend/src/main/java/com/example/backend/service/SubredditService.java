@@ -34,12 +34,9 @@ public class SubredditService {
     }
 
     @Async
-    public CompletableFuture<Subreddit> createAsync(Subreddit subreddit, Long userId) {
-
-        var user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-        subreddit.setCreatedBy(user);
-        return CompletableFuture.completedFuture(subredditRepository.save(subreddit));
+    public CompletableFuture<Subreddit> createAsync(Subreddit subreddit) {
+        Subreddit savedSubreddit = subredditRepository.save(subreddit);
+        return CompletableFuture.completedFuture(savedSubreddit);
     }
 
     @Async
