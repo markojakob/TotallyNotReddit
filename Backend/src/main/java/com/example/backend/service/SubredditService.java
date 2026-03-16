@@ -1,13 +1,15 @@
 package com.example.backend.service;
 
+import com.example.backend.Dto.RequestDtos.CreateSubredditRequest;
+import com.example.backend.Dto.ResponseDtos.SubredditResponse;
+import com.example.backend.Mapper.SubredditMapper;
 import com.example.backend.model.Subreddit;
+import com.example.backend.model.User;
 import com.example.backend.repository.SubredditRepository;
 import com.example.backend.repository.UserRepository;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 @Service
 public class SubredditService {
@@ -20,45 +22,49 @@ public class SubredditService {
         this.userRepository = userRepository;
     }
 
-    @Async
-    public CompletableFuture<Subreddit> getAsync(Long id) {
-        return CompletableFuture.completedFuture(
-                subredditRepository.findById(id)
-                        .orElseThrow(() -> new RuntimeException("Subreddit by id " + id + " does not exist"))
-        );
+    public SubredditResponse createSubreddit(CreateSubredditRequest request, Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        Subreddit subreddit = SubredditMapper.fromRequest(request, user);
+        subredditRepository.save(subreddit);
+
+        return SubredditMapper.toResponse(subreddit);
     }
 
-    @Async
-    public CompletableFuture<List<Subreddit>> listAsync() {
-        return CompletableFuture.completedFuture(subredditRepository.findAll());
+    public List<SubredditResponse> getAllSubreddits() {
+        return subredditRepository.findAll()
+                .stream()
+                .map(SubredditMapper::toResponse)
+                .toList();
     }
 
-    @Async
-    public CompletableFuture<Subreddit> createAsync(Subreddit subreddit) {
-        Subreddit savedSubreddit = subredditRepository.save(subreddit);
-        return CompletableFuture.completedFuture(savedSubreddit);
+    public SubredditResponse getSubredditById(Long id) {
+        Subreddit subreddit = subredditRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Subreddit not found"));
+        return SubredditMapper.toResponse(subreddit);
     }
 
-    @Async
-    public CompletableFuture<Subreddit> updateAsync(Long id, Subreddit subreddit) {
-        Subreddit existingSubreddit = subredditRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Subreddit by id " + id + " does not exist"));
+    public SubredditResponse updateSubreddit(Long id, CreateSubredditRequest request) {
+        Subreddit existing = subredditRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Subreddit not found"));
 
-        if (subredditRepository.existsByNameAndIdNot(existingSubreddit.getName(), existingSubreddit.getId())) {
+        if (subredditRepository.existsByNameAndIdNot(request.getName(), id)) {
             throw new RuntimeException("A subreddit with this name already exists");
         }
 
-        existingSubreddit.setName(subreddit.getName());
-        existingSubreddit.setDescription(subreddit.getDescription());
+        existing.setName(request.getName());
+        existing.setDescription(request.getDescription());
+        existing.setRules(request.getRules());
+        existing.setPrivate(request.getIsPrivate());
 
-        return CompletableFuture.completedFuture(subredditRepository.save(existingSubreddit));
+        subredditRepository.save(existing);
+        return SubredditMapper.toResponse(existing);
     }
 
-    @Async
-    public CompletableFuture<Subreddit> deleteAsync(Long id) {
+    public void deleteSubreddit(Long id) {
         Subreddit subreddit = subredditRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Subreddit by id " + id + " does not exist"));
-        subredditRepository.deleteById(id);
-        return CompletableFuture.completedFuture(subreddit);
+                .orElseThrow(() -> new RuntimeException("Subreddit not found"));
+        subredditRepository.delete(subreddit);
     }
 }

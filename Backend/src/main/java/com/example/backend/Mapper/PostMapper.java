@@ -1,33 +1,31 @@
 package com.example.backend.Mapper;
 
-import com.example.backend.Dto.PostDto;
+import com.example.backend.Dto.RequestDtos.CreatePostRequest;
+import com.example.backend.Dto.ResponseDtos.PostResponse;
 import com.example.backend.model.Post;
+import com.example.backend.model.Subreddit;
+import com.example.backend.model.User;
 
 public class PostMapper {
 
-    public static PostDto toDto(Post post) {
-        Long userId = null;
-        String username = null;
-        if (post.getUser() != null) {
-            userId = post.getUser().getId();
-            username = post.getUser().getUsername();
-        }
+    public static Post fromRequest(CreatePostRequest request, User user, Subreddit subreddit) {
+        Post post = new Post();
+        post.setTitle(request.getTitle());
+        post.setContent(request.getContent());
+        post.setUser(user);
+        post.setSubreddit(subreddit);
+        return post;
+    }
 
-        Long subredditId = null;
-        String subredditName = null;
-        if (post.getSubreddit() != null) {
-            subredditId = post.getSubreddit().getId();
-            subredditName = post.getSubreddit().getName();
-        }
-
-        return new PostDto(
+    public static PostResponse toResponse(Post post) {
+        return new PostResponse(
                 post.getId(),
                 post.getTitle(),
                 post.getContent(),
-                userId,
-                username,
-                subredditId,
-                subredditName,
+                post.getUser() != null ? post.getUser().getId() : null,
+                post.getUser() != null ? post.getUser().getUsername() : null,
+                post.getSubreddit() != null ? post.getSubreddit().getId() : null,
+                post.getSubreddit() != null ? post.getSubreddit().getName() : null,
                 post.getScore(),
                 post.getMediaUrl(),
                 post.getCreatedAt(),

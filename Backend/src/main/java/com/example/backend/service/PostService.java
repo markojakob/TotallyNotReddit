@@ -1,6 +1,8 @@
 package com.example.backend.service;
 
-import com.example.backend.Dto.PostDto;
+import com.example.backend.Dto.RequestDtos.CreatePostRequest;
+import com.example.backend.Dto.ResponseDtos.PostResponse;
+import com.example.backend.Mapper.PostMapper;
 import com.example.backend.model.Post;
 import com.example.backend.model.Subreddit;
 import com.example.backend.model.User;
@@ -20,63 +22,36 @@ public class PostService {
     private final UserRepository userRepository;
     private final SubredditRepository subredditRepository;
 
-    public PostService(PostRepository postRepository, UserRepository userRepository, SubredditRepository subredditRepository) {
+    public PostService(PostRepository postRepository,
+                       UserRepository userRepository,
+                       SubredditRepository subredditRepository) {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
         this.subredditRepository = subredditRepository;
     }
 
-    @Async
-    public CompletableFuture<Post> getAsync(Long id) {
-        return CompletableFuture.completedFuture(
-                postRepository.findById(id)
-                        .orElseThrow(() -> new RuntimeException("Post by id " + id + " does not exist"))
-        );
-    }
-
-    @Async
-    public CompletableFuture<List<Post>> listAsync() {
-        return CompletableFuture.completedFuture(postRepository.findAll());
-    }
-
-    @Async
-    public CompletableFuture<Post> createAsync(PostDto dto) {
-
-        Subreddit subreddit = subredditRepository.findById(dto.getSubredditId())
+    public PostResponse createPost(CreatePostRequest request, Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        Subreddit subreddit = subredditRepository.findById(request.getSubredditId())
                 .orElseThrow(() -> new RuntimeException("Subreddit not found"));
 
-        User user = userRepository.findById(dto.getUserId())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        Post post = PostMapper.fromRequest(request, user, subreddit);
+        postRepository.save(post);
 
-        Post post = new Post();
-        post.setTitle(dto.getTitle());
-        post.setContent(dto.getContent());
-        post.setMediaUrl(dto.getMediaUrl());
-        post.setScore(0);
-        post.setSubreddit(subreddit);
-        post.setUser(user);
-
-        return CompletableFuture.completedFuture(postRepository.save(post));
+        return PostMapper.toResponse(post);
     }
 
-    @Async
-    public CompletableFuture<Post> updateAsync(Long id, Post post) {
-        Post existingPost = postRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Post by id " + id + " does not exist"));
-
-        existingPost.setTitle(post.getTitle());
-        existingPost.setContent(post.getContent());
-        existingPost.setUser(post.getUser());
-        existingPost.setSubreddit(post.getSubreddit());
-
-        return CompletableFuture.completedFuture(postRepository.save(existingPost));
+    public List<PostResponse> getAllPosts() {
+        return postRepository.findAll()
+                .stream()
+                .map(PostMapper::toResponse)
+                .toList();
     }
 
-    @Async
-    public CompletableFuture<Post> deleteAsync(Long id) {
+    public PostResponse getPostById(Long id) {
         Post post = postRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Post by id " + id + " does not exist"));
-        postRepository.deleteById(id);
-        return CompletableFuture.completedFuture(post);
+                .orElseThrow(() -> new RuntimeException("Post not found"));
+        return PostMapper.toResponse(post);
     }
 }

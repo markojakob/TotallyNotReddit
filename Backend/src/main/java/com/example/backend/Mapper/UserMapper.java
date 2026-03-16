@@ -1,17 +1,18 @@
 package com.example.backend.Mapper;
 
-import com.example.backend.Dto.UserDto;
+import com.example.backend.Dto.ResponseDtos.UserResponse;
 import com.example.backend.model.User;
 
 public class UserMapper {
 
-    public static UserDto toDto(User user) {
-        if (user == null) return null;
-
-        return new UserDto(
+    public static UserResponse toResponse(User user) {
+        return new UserResponse(
                 user.getId(),
                 user.getUsername(),
                 user.getEmail(),
+                user.getCreatedAt(),
+                user.getUpdatedAt(),
+                user.getIsAdmin(),
                 user.getKarma()
         );
     }

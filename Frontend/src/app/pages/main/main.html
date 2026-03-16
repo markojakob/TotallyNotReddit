@@ -1,0 +1,22 @@
+<div class="main-page">
+
+    <h1>All Posts</h1>
+
+    @if (loading()) {
+    <div>
+        Loading posts...
+    </div>
+    }
+
+    @else if (posts.length == 0) {
+    <div>
+        No posts yet.
+    </div>
+    }
+
+    @else {
+    @for (post of posts(); track post.id) {
+        <app-post-card [post]="post" ></app-post-card>
+        }
+    }
+</div>

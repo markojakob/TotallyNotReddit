@@ -1,0 +1,6 @@
+<div class="post-card">
+    <h3>{{ post.title }}</h3>
+    <p>{{ post.content }}</p>
+    <small>By: {{ post.username || post.userId }} in {{ post.subredditName || post.subredditId }}</small>
+    <div>Score: {{ post.score }}</div>
+</div>

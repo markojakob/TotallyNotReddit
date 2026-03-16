@@ -1,59 +1,55 @@
 package com.example.backend.controller;
 
-import com.example.backend.Dto.UserDto;
-import com.example.backend.Mapper.UserMapper;
-import com.example.backend.model.User;
+import com.example.backend.Dto.RequestDtos.CreateUserRequest;
+import com.example.backend.Dto.ResponseDtos.UserResponse;
 import com.example.backend.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
+
     private final UserService userService;
 
     public UserController(UserService userService) {
         this.userService = userService;
     }
 
-    @GetMapping("/{id}")
-    public CompletableFuture<ResponseEntity<UserDto>> getUser(@PathVariable Long id) {
-        return userService.getAsync(id)
-                .thenApply(user -> ResponseEntity.ok(UserMapper.toDto(user)));
-    }
-
+    // GET all users
     @GetMapping
-    public CompletableFuture<ResponseEntity<List<UserDto>>> listUsers() {
-        return userService.listAsync()
-                .thenApply(users -> users.stream()
-                        .map(UserMapper::toDto)
-                        .toList())
-                .thenApply(ResponseEntity::ok);
+    public ResponseEntity<List<UserResponse>> getAllUsers() {
+        return ResponseEntity.ok(userService.getAllUsers());
     }
 
+    // GET user by ID
+    @GetMapping("/{id}")
+    public ResponseEntity<UserResponse> getUserById(@PathVariable Long id) {
+        return ResponseEntity.ok(userService.getUserById(id));
+    }
 
+    // CREATE new user
     @PostMapping
-    public CompletableFuture<ResponseEntity<UserDto>> createUser(@RequestBody User user) {
-        return userService.createAsync(user)
-                .thenApply(savedUser -> ResponseEntity.ok(UserMapper.toDto(savedUser)));
+    public ResponseEntity<UserResponse> createUser(@RequestBody CreateUserRequest request) {
+        UserResponse saved = userService.createUser(request);
+        return ResponseEntity.ok(saved);
     }
 
-
-    @PutMapping
-    public CompletableFuture<ResponseEntity<UserDto>> updateUser(
+    // UPDATE user
+    @PutMapping("/{id}")
+    public ResponseEntity<UserResponse> updateUser(
             @PathVariable Long id,
-            @RequestBody User user) {
-        return userService.updateAsync(id, user)
-                .thenApply(updatedUser -> ResponseEntity.ok(UserMapper.toDto(updatedUser)));
+            @RequestBody CreateUserRequest request) {
+        UserResponse updated = userService.updateUser(id, request);
+        return ResponseEntity.ok(updated);
     }
 
-
+    // DELETE user
     @DeleteMapping("/{id}")
-    public CompletableFuture<ResponseEntity<Void>> deleteUser(@PathVariable Long id) {
-        return userService.deleteAsync(id)
-                .thenApply(deletedUser -> ResponseEntity.noContent().build());
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+        userService.deleteUser(id);
+        return ResponseEntity.noContent().build();
     }
 }
