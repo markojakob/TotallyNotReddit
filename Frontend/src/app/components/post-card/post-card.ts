@@ -1,5 +1,5 @@
 import { Component, Input, input, signal } from '@angular/core';
-import { Post } from '../../interfaces/post';
+import { Post } from '../../models/post';
 
 @Component({
   selector: 'app-post-card',
@@ -9,4 +9,6 @@ import { Post } from '../../interfaces/post';
 })
 export class PostCard {
   @Input() post!: Post
+
+  
 }

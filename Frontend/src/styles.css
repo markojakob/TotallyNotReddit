@@ -1,3 +1,4 @@
 /* You can add global styles to this file, and also import other style files */
-
+/* DaisyUI should be configured in tailwind.config.js, not imported here */
 @import "tailwindcss";
+@plugin "daisyui";

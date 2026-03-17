@@ -2,7 +2,9 @@ import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Post} from '../interfaces/post';
+import { Post} from '../models/post';
+import { VoteRequest } from '../models/vote-request';
+import { VoteResponse } from '../models/vote-response';
 
 @Injectable({
   providedIn: 'root',
@@ -31,6 +33,11 @@ updatePost(id: Number, post: Partial<Post>): Observable<Post> {
 
 deletePost(id: Number): Observable<Post> {
   return this.http.delete<Post>(`${this.baseApi}/${id}`);
+}
+
+voteOnPost(postId: number, vote: VoteRequest): Observable<VoteResponse> {
+  vote.postId = postId;
+  return this.http.post<VoteResponse>(`${this.baseApi}/${postId}/vote`, vote);
 }
 
   }

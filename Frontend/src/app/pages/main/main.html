@@ -1,22 +1,18 @@
-<div class="main-page">
+<div class="flex min-h-screen">
+    <app-sidebar [subreddits]="subreddits()"></app-sidebar>
 
-    <h1>All Posts</h1>
-
-    @if (loading()) {
-    <div>
-        Loading posts...
+  <!-- Center Feed -->
+  <div class="flex-1 flex justify-center">
+    <div class="feed flex flex-col gap-4 max-w-2xl w-full p-4">
+      @if (loading()) {
+      <div>Loading posts...</div>
+      } @else if (posts().length === 0) {
+      <div>No posts yet.</div>
+      } @else {
+      @for (post of posts(); track post.id) {
+      <app-post-card [post]="post"></app-post-card>
+      }
+      }
     </div>
-    }
-
-    @else if (posts.length == 0) {
-    <div>
-        No posts yet.
-    </div>
-    }
-
-    @else {
-    @for (post of posts(); track post.id) {
-        <app-post-card [post]="post" ></app-post-card>
-        }
-    }
+  </div>
 </div>
