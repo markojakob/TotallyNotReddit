@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 @Service
 public class PostService {
@@ -40,6 +41,18 @@ public class PostService {
         postRepository.save(post);
 
         return PostMapper.toResponse(post);
+    }
+
+    public List<PostResponse> getPostsBySubreddit(String name) {
+
+        Subreddit subreddit = subredditRepository
+                .findByName(name)
+                .orElseThrow(() -> new RuntimeException("Subreddit not found"));
+
+        return postRepository.findAllBySubreddit(subreddit)
+                .stream()
+                .map(PostMapper::toResponse)
+                .toList();
     }
 
     public List<PostResponse> getAllPosts() {

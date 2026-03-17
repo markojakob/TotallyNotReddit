@@ -40,5 +40,9 @@ voteOnPost(postId: number, vote: VoteRequest): Observable<VoteResponse> {
   return this.http.post<VoteResponse>(`${this.baseApi}/${postId}/vote`, vote);
 }
 
+getPostsBySubreddit(subredditId: number): Observable<Post[]> {
+  return this.http.post<Post[]>(`${this.baseApi}/${subredditId}/posts`, subredditId);
+}
+
   }
 

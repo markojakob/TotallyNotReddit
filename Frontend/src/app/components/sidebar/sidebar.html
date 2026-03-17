@@ -7,7 +7,9 @@
         <h2 class="text-lg font-semibold  text-gray-500">TRENDING</h2>
         <ul class="flex flex-col gap-2 text-gray-200">
             @for (subreddit of subreddits; track $index) {
-            <li> r/{{ subreddit.name }}</li>
+            <li>
+                 <a routerLink="/r/{{ subreddit.name }}">r/{{ subreddit.name }}</a> 
+            </li>
             }
         </ul>
     </div>

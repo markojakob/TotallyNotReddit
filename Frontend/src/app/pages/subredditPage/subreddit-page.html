@@ -1,0 +1,51 @@
+<div class="flex flex-col min-h-screen">
+
+    <div class="bg-base-200 border-b">
+        <div class="max-w-5xl mx-auto p-6">
+            <h1 class="text-3xl font-bold">r/{{ subredditName }}</h1>
+        </div>
+    </div>
+
+    <div class="flex flex-1">
+
+        <app-sidebar [subreddits]="subreddits"></app-sidebar>
+
+        <div class="flex-1 flex justify-center p-4">
+            <div class="flex flex-col gap-4 max-w-2xl w-full">
+
+                @if (loading()) {
+                <div>Loading posts...</div>
+                } @else if (posts().length === 0) {
+                <div>No posts yet.</div>
+                } @else {
+                @for (post of posts(); track post.id) {
+                <app-post-card [post]="post"></app-post-card>
+                }
+                }
+
+            </div>
+        </div>
+
+        <div class="w-80 p-4 hidden xl:block">
+            <div class="bg-base-100 shadow rounded-lg p-4 mb-4">
+                <h2 class="font-bold mb-2">About Community</h2>
+                <p class="text-sm text-gray-400">
+                    {{ subreddit()?.description }}
+                </p>
+            </div>
+
+            <!-- RULES CARD -->
+            <div class="bg-base-100 shadow rounded-lg p-4">
+                <h2 class="font-bold mb-2">Rules</h2>
+
+                <ul class="text-sm text-gray-400 flex flex-col gap-2">
+                    {{ subreddit()?.rules}}
+                </ul>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

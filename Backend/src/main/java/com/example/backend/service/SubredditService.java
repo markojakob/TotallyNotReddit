@@ -39,6 +39,14 @@ public class SubredditService {
                 .toList();
     }
 
+    public SubredditResponse getByName(String name) {
+
+        Subreddit subreddit = subredditRepository.findByName(name)
+                .orElseThrow(() -> new RuntimeException("Subreddit not found"));
+
+        return SubredditMapper.toResponse(subreddit);
+    }
+
     public SubredditResponse getSubredditById(Long id) {
         Subreddit subreddit = subredditRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Subreddit not found"));
