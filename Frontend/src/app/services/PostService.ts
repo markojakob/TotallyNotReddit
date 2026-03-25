@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { Post} from '../models/post';
 import { VoteRequest } from '../models/vote-request';
 import { VoteResponse } from '../models/vote-response';
+import { VoteResult } from '../models/vote-result';
 
 @Injectable({
   providedIn: 'root',
@@ -35,14 +36,8 @@ deletePost(id: Number): Observable<Post> {
   return this.http.delete<Post>(`${this.baseApi}/${id}`);
 }
 
-voteOnPost(postId: number, vote: VoteRequest): Observable<VoteResponse> {
-  vote.postId = postId;
-  return this.http.post<VoteResponse>(`${this.baseApi}/${postId}/vote`, vote);
-}
-
-getPostsBySubreddit(subredditId: number): Observable<Post[]> {
-  return this.http.post<Post[]>(`${this.baseApi}/${subredditId}/posts`, subredditId);
-}
-
+voteOnPost(postId: number, voteRequest: VoteRequest): Observable<VoteResult> {
+  return this.http.post<VoteResult>(`${this.baseApi}/${postId}/vote`, voteRequest);
   }
 
+}

@@ -1,8 +1,47 @@
-<div class="card w-96 bg-base-100 border border-gray-200 card-md shadow-sm">
-  <div class="card-body">
-    r/{{ post.subredditName || post.subredditId }}
-    <h2 class="card-title">{{ post.title }}</h2>
-    <p>{{ post.content }}</p>
-    <div>Score: {{ post.score }}</div>
+<div class="flex border border-gray-200 rounded shadow-sm bg-white w-96">
+  <!-- Voting column -->
+  <div class="flex flex-col items-center bg-gray-50 p-2 w-12">
+<!-- Upvote -->
+<button
+  (click)="upvote(post)"
+  class="transition-colors duration-200 hover:text-orange-500"
+  [ngClass]="{
+    'text-orange-500': userVotes()[post.id] === 1,
+    'text-gray-400': userVotes()[post.id] !== 1
+  }"
+>
+▲
+</button>
+
+<!-- Downvote -->
+<button
+  (click)="downvote(post)"
+  class="transition-colors duration-200 hover:text-blue-500"
+  [ngClass]="{
+    'text-blue-500': userVotes()[post.id] === -1,
+    'text-gray-400': userVotes()[post.id] !== -1
+  }"
+>
+▼
+</button>
+  </div>
+
+  <!-- Post content column -->
+  <div class="flex-1 p-3 cursor-pointer"
+       [routerLink]="['/r', post.subredditName, 'comments', post.id, slugify(post.title)]">
+    <!-- Subreddit / info -->
+    <div class="text-xs text-gray-500 mb-1">
+      r/{{ post.subredditName || post.subredditId }}
+    </div>
+
+    <!-- Title -->
+    <h2 class="font-semibold text-gray-900 text-md mb-1">
+      {{ post.title }}
+    </h2>
+
+    <!-- Content -->
+    <p class="text-gray-700 text-sm mb-2 line-clamp-7">
+      {{ post.content }}
+    </p>
   </div>
 </div>

@@ -14,4 +14,5 @@ export interface Post {
 
   createdAt: string;       
   updatedAt: string | null;
+  loading?: boolean; 
 }
