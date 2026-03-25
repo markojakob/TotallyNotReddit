@@ -4,6 +4,7 @@ import com.example.backend.Dto.RequestDtos.CreatePostRequest;
 import com.example.backend.Dto.RequestDtos.VoteRequest;
 import com.example.backend.Dto.ResponseDtos.PostResponse;
 import com.example.backend.Dto.ResponseDtos.VoteResponse;
+import com.example.backend.Dto.ResponseDtos.VoteResult;
 import com.example.backend.Mapper.VoteMapper;
 import com.example.backend.model.Vote;
 import com.example.backend.service.PostService;
@@ -46,12 +47,12 @@ public class PostController {
     }
 
     @PostMapping("/{postId}/vote")
-    public ResponseEntity<VoteResponse> voteOnPost(
+    public ResponseEntity<VoteResult> voteOnPost(
             @PathVariable Long postId,
-            @RequestBody VoteRequest vote) {
+            @RequestBody VoteRequest voteRequest) {
 
-        vote.setPostId(postId);
-        VoteResponse savedVote = voteService.createPostVote(vote);
-        return ResponseEntity.ok(savedVote);
+        voteRequest.setPostId(postId);
+        VoteResult result = voteService.createPostVote(voteRequest);
+        return ResponseEntity.ok(result);
     }
 }
