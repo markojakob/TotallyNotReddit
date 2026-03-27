@@ -7,6 +7,7 @@ import com.example.backend.Dto.ResponseDtos.VoteResponse;
 import com.example.backend.Dto.ResponseDtos.VoteResult;
 import com.example.backend.Mapper.VoteMapper;
 import com.example.backend.model.Vote;
+import com.example.backend.service.AuthService;
 import com.example.backend.service.PostService;
 import com.example.backend.service.VoteService;
 import org.springframework.http.ResponseEntity;
@@ -20,10 +21,12 @@ public class PostController {
 
     private final PostService postService;
     private final VoteService voteService;
+    private final AuthService authService;
 
-    public PostController(PostService postService, VoteService voteService) {
+    public PostController(PostService postService, VoteService voteService, AuthService authService) {
         this.postService = postService;
         this.voteService = voteService;
+        this.authService = authService;
     }
 
 
@@ -41,7 +44,7 @@ public class PostController {
     @PostMapping
     public ResponseEntity<PostResponse> createPost(
             @RequestBody CreatePostRequest request) {
-        Long loggedUserId = 1L;
+        Long loggedUserId = authService.getCurrentUser().getId();
         PostResponse saved = postService.createPost(request, loggedUserId);
         return ResponseEntity.ok(saved);
     }

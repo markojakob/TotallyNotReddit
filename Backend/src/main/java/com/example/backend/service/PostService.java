@@ -20,20 +20,18 @@ import java.util.stream.Collectors;
 public class PostService {
 
     private final PostRepository postRepository;
-    private final UserRepository userRepository;
     private final SubredditRepository subredditRepository;
+    private final AuthService authService;
 
     public PostService(PostRepository postRepository,
-                       UserRepository userRepository,
-                       SubredditRepository subredditRepository) {
+                       SubredditRepository subredditRepository, AuthService authService) {
         this.postRepository = postRepository;
-        this.userRepository = userRepository;
         this.subredditRepository = subredditRepository;
+        this.authService = authService;
     }
 
     public PostResponse createPost(CreatePostRequest request, Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        User user = authService.getCurrentUser();
         Subreddit subreddit = subredditRepository.findById(request.getSubredditId())
                 .orElseThrow(() -> new RuntimeException("Subreddit not found"));
 

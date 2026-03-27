@@ -3,6 +3,7 @@ package com.example.backend.controller;
 import com.example.backend.Dto.RequestDtos.CreateSubredditRequest;
 import com.example.backend.Dto.ResponseDtos.PostResponse;
 import com.example.backend.Dto.ResponseDtos.SubredditResponse;
+import com.example.backend.service.AuthService;
 import com.example.backend.service.PostService;
 import com.example.backend.service.SubredditService;
 import org.springframework.http.ResponseEntity;
@@ -16,10 +17,12 @@ public class SubredditController {
 
     private final SubredditService subredditService;
     private final PostService postService;
+    private final AuthService authService;
 
-    public SubredditController(SubredditService subredditService, PostService postService) {
+    public SubredditController(SubredditService subredditService, PostService postService, AuthService authService) {
         this.subredditService = subredditService;
         this.postService = postService;
+        this.authService = authService;
     }
 
     @GetMapping
@@ -42,7 +45,7 @@ public class SubredditController {
     public ResponseEntity<SubredditResponse> createSubreddit(
             @RequestBody CreateSubredditRequest request) {
 
-        Long loggedUserId = 1L;
+        Long loggedUserId = authService.getCurrentUser().getId();
         SubredditResponse saved = subredditService.createSubreddit(request, loggedUserId);
         return ResponseEntity.ok(saved);
     }

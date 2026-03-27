@@ -74,4 +74,14 @@ public class UserService {
                 .orElseThrow(() -> new RuntimeException("User not found"));
         userRepository.delete(existing);
     }
+
+    public void validateUserDoesNotExist(String username, String email) {
+        if (userRepository.existsByUsername(username)) {
+            throw new RuntimeException("Username taken");
+        }
+        if (userRepository.existsByEmail(email)) {
+            throw new RuntimeException("Email taken");
+        }
+    }
+
 }

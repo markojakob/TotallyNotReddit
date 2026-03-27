@@ -2,8 +2,10 @@ package com.example.backend.controller;
 
 import com.example.backend.Dto.RequestDtos.CreateUserRequest;
 import com.example.backend.Dto.ResponseDtos.UserResponse;
+import com.example.backend.service.AuthService;
 import com.example.backend.service.UserService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,40 +15,43 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+    private final AuthService authService;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, AuthService authService) {
         this.userService = userService;
+        this.authService = authService;
     }
 
-    // GET all users
+    @PreAuthorize("principal.isAdmin == true")
     @GetMapping
     public ResponseEntity<List<UserResponse>> getAllUsers() {
+
         return ResponseEntity.ok(userService.getAllUsers());
     }
 
-    // GET user by ID
+    @PreAuthorize("principal.isAdmin == true")
     @GetMapping("/{id}")
     public ResponseEntity<UserResponse> getUserById(@PathVariable Long id) {
+
         return ResponseEntity.ok(userService.getUserById(id));
     }
 
-    // CREATE new user
+    @PreAuthorize("principal.isAdmin == true")
     @PostMapping
     public ResponseEntity<UserResponse> createUser(@RequestBody CreateUserRequest request) {
-        UserResponse saved = userService.createUser(request);
-        return ResponseEntity.ok(saved);
+
+        return ResponseEntity.ok(userService.createUser(request));
     }
 
-    // UPDATE user
+    @PreAuthorize("principal.isAdmin == true")
     @PutMapping("/{id}")
-    public ResponseEntity<UserResponse> updateUser(
-            @PathVariable Long id,
-            @RequestBody CreateUserRequest request) {
-        UserResponse updated = userService.updateUser(id, request);
-        return ResponseEntity.ok(updated);
+    public ResponseEntity<UserResponse> updateUser(@PathVariable Long id,
+                                                   @RequestBody CreateUserRequest request) {
+
+        return ResponseEntity.ok(userService.updateUser(id, request));
     }
 
-    // DELETE user
+    @PreAuthorize("principal.isAdmin == true")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);

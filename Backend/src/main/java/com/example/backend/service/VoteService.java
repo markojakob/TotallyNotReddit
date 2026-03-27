@@ -20,19 +20,18 @@ public class VoteService {
 
     private final VoteRepository voteRepository;
     private final PostRepository postRepository;
-    private final UserRepository userRepository;
+    private final AuthService authService;
 
-    public VoteService(VoteRepository voteRepository, PostRepository postRepository, UserRepository userRepository) {
+    public VoteService(VoteRepository voteRepository, PostRepository postRepository, UserRepository userRepository, AuthService authService) {
         this.voteRepository = voteRepository;
         this.postRepository = postRepository;
-        this.userRepository = userRepository;
+        this.authService = authService;
     }
 
     @Transactional
     public VoteResult createPostVote(VoteRequest request) {
 
-        User user = userRepository.findById(request.getUserId())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        User user = authService.getCurrentUser();
 
         Post post = postRepository.findById(request.getPostId())
                 .orElseThrow(() -> new RuntimeException("Post not found"));

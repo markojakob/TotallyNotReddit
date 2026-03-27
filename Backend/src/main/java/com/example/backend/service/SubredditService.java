@@ -16,16 +16,16 @@ public class SubredditService {
 
     private final SubredditRepository subredditRepository;
     private final UserRepository userRepository;
+    private final AuthService authService;
 
-    public SubredditService(SubredditRepository subredditRepository, UserRepository userRepository) {
+    public SubredditService(SubredditRepository subredditRepository, UserRepository userRepository, AuthService authService) {
         this.subredditRepository = subredditRepository;
         this.userRepository = userRepository;
+        this.authService = authService;
     }
 
     public SubredditResponse createSubreddit(CreateSubredditRequest request, Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
+        User user = authService.getCurrentUser();
         Subreddit subreddit = SubredditMapper.fromRequest(request, user);
         subredditRepository.save(subreddit);
 
