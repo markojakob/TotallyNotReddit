@@ -1,10 +1,12 @@
-package com.example.backend.service;
+package com.example.backend.Service;
 
 import com.example.backend.Dto.RequestDtos.CreateUserRequest;
 import com.example.backend.Dto.ResponseDtos.UserResponse;
+import com.example.backend.Exception.BadRequestException;
+import com.example.backend.Exception.NotFoundException;
 import com.example.backend.Mapper.UserMapper;
-import com.example.backend.model.User;
-import com.example.backend.repository.UserRepository;
+import com.example.backend.Model.User;
+import com.example.backend.Repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -23,10 +25,10 @@ public class UserService {
 
     public UserResponse createUser(CreateUserRequest request) {
         if (userRepository.existsByUsername(request.getUsername())) {
-            throw new RuntimeException("Username already exists");
+            throw new BadRequestException("Username already exists");
         }
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new RuntimeException("Email already exists");
+            throw new BadRequestException("An user with this email already exist");
         }
 
         User user = new User();
@@ -40,7 +42,7 @@ public class UserService {
 
     public UserResponse getUserById(Long id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new NotFoundException("User not found"));
         return UserMapper.toResponse(user);
     }
 
@@ -53,15 +55,15 @@ public class UserService {
 
     public UserResponse updateUser(Long id, CreateUserRequest request) {
         User existing = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new NotFoundException("User not found"));
 
         if (userRepository.existsByUsernameAndIdNot(request.getUsername(), id)) {
-            throw new RuntimeException("Username already exists");
+            throw new BadRequestException("Username already exists");
         }
         existing.setUsername(request.getUsername());
 
         if (userRepository.existsByEmailAndIdNot(request.getEmail(), id)) {
-            throw new RuntimeException("Email already exists");
+            throw new BadRequestException("An user with this email already exist");
         }
         existing.setEmail(request.getEmail());
 
@@ -71,16 +73,16 @@ public class UserService {
 
     public void deleteUser(Long id) {
         User existing = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new NotFoundException("User not found"));
         userRepository.delete(existing);
     }
 
     public void validateUserDoesNotExist(String username, String email) {
         if (userRepository.existsByUsername(username)) {
-            throw new RuntimeException("Username taken");
+            throw new RuntimeException("Username already exist");
         }
         if (userRepository.existsByEmail(email)) {
-            throw new RuntimeException("Email taken");
+            throw new RuntimeException("An user with this email already exist");
         }
     }
 

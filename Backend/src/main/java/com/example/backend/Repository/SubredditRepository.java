@@ -1,7 +1,7 @@
-package com.example.backend.repository;
+package com.example.backend.Repository;
 
 
-import com.example.backend.model.Subreddit;
+import com.example.backend.Model.Subreddit;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

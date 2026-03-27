@@ -1,4 +1,4 @@
-package com.example.backend.service;
+package com.example.backend.Service;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;

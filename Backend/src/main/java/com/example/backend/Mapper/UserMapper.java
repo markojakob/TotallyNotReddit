@@ -1,7 +1,7 @@
 package com.example.backend.Mapper;
 
 import com.example.backend.Dto.ResponseDtos.UserResponse;
-import com.example.backend.model.User;
+import com.example.backend.Model.User;
 
 public class UserMapper {
 

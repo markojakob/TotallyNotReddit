@@ -1,41 +1,35 @@
-package com.example.backend.service;
+package com.example.backend.Service;
 
 import com.example.backend.Dto.RequestDtos.CreatePostRequest;
 import com.example.backend.Dto.ResponseDtos.PostResponse;
+import com.example.backend.Exception.NotFoundException;
 import com.example.backend.Mapper.PostMapper;
-import com.example.backend.model.Post;
-import com.example.backend.model.Subreddit;
-import com.example.backend.model.User;
-import com.example.backend.repository.PostRepository;
-import com.example.backend.repository.SubredditRepository;
-import com.example.backend.repository.UserRepository;
-import org.springframework.scheduling.annotation.Async;
+import com.example.backend.Model.Post;
+import com.example.backend.Model.Subreddit;
+import com.example.backend.Model.User;
+import com.example.backend.Repository.PostRepository;
+import com.example.backend.Repository.SubredditRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
 
 @Service
 public class PostService {
 
     private final PostRepository postRepository;
     private final SubredditRepository subredditRepository;
-    private final AuthService authService;
 
     public PostService(PostRepository postRepository,
-                       SubredditRepository subredditRepository, AuthService authService) {
+                       SubredditRepository subredditRepository) {
         this.postRepository = postRepository;
         this.subredditRepository = subredditRepository;
-        this.authService = authService;
     }
 
-    public PostResponse createPost(CreatePostRequest request, Long userId) {
-        User user = authService.getCurrentUser();
+    public PostResponse createPost(CreatePostRequest request, User author) {
         Subreddit subreddit = subredditRepository.findById(request.getSubredditId())
                 .orElseThrow(() -> new RuntimeException("Subreddit not found"));
 
-        Post post = PostMapper.fromRequest(request, user, subreddit);
+        Post post = PostMapper.fromRequest(request, author, subreddit);
         postRepository.save(post);
 
         return PostMapper.toResponse(post);
@@ -45,7 +39,7 @@ public class PostService {
 
         Subreddit subreddit = subredditRepository
                 .findByName(name)
-                .orElseThrow(() -> new RuntimeException("Subreddit not found"));
+                .orElseThrow(() -> new NotFoundException("Subreddit not found"));
 
         return postRepository.findAllBySubreddit(subreddit)
                 .stream()
@@ -62,7 +56,7 @@ public class PostService {
 
     public PostResponse getPostById(Long id) {
         Post post = postRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Post not found"));
+                .orElseThrow(() -> new NotFoundException("Post not found"));
         return PostMapper.toResponse(post);
     }
 }

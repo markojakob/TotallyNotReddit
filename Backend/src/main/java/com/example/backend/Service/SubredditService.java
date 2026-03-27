@@ -1,12 +1,14 @@
-package com.example.backend.service;
+package com.example.backend.Service;
 
 import com.example.backend.Dto.RequestDtos.CreateSubredditRequest;
 import com.example.backend.Dto.ResponseDtos.SubredditResponse;
+import com.example.backend.Exception.BadRequestException;
+import com.example.backend.Exception.NotFoundException;
 import com.example.backend.Mapper.SubredditMapper;
-import com.example.backend.model.Subreddit;
-import com.example.backend.model.User;
-import com.example.backend.repository.SubredditRepository;
-import com.example.backend.repository.UserRepository;
+import com.example.backend.Model.Subreddit;
+import com.example.backend.Model.User;
+import com.example.backend.Repository.SubredditRepository;
+import com.example.backend.Repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,17 +17,12 @@ import java.util.List;
 public class SubredditService {
 
     private final SubredditRepository subredditRepository;
-    private final UserRepository userRepository;
-    private final AuthService authService;
 
-    public SubredditService(SubredditRepository subredditRepository, UserRepository userRepository, AuthService authService) {
+    public SubredditService(SubredditRepository subredditRepository) {
         this.subredditRepository = subredditRepository;
-        this.userRepository = userRepository;
-        this.authService = authService;
     }
 
-    public SubredditResponse createSubreddit(CreateSubredditRequest request, Long userId) {
-        User user = authService.getCurrentUser();
+    public SubredditResponse createSubreddit(CreateSubredditRequest request, User user) {
         Subreddit subreddit = SubredditMapper.fromRequest(request, user);
         subredditRepository.save(subreddit);
 
@@ -42,23 +39,23 @@ public class SubredditService {
     public SubredditResponse getByName(String name) {
 
         Subreddit subreddit = subredditRepository.findByName(name)
-                .orElseThrow(() -> new RuntimeException("Subreddit not found"));
+                .orElseThrow(() -> new NotFoundException("Subreddit not found"));
 
         return SubredditMapper.toResponse(subreddit);
     }
 
     public SubredditResponse getSubredditById(Long id) {
         Subreddit subreddit = subredditRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Subreddit not found"));
+                .orElseThrow(() -> new NotFoundException("Subreddit not found"));
         return SubredditMapper.toResponse(subreddit);
     }
 
     public SubredditResponse updateSubreddit(Long id, CreateSubredditRequest request) {
         Subreddit existing = subredditRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Subreddit not found"));
+                .orElseThrow(() -> new NotFoundException("Subreddit not found"));
 
         if (subredditRepository.existsByNameAndIdNot(request.getName(), id)) {
-            throw new RuntimeException("A subreddit with this name already exists");
+            throw new BadRequestException("A subreddit with this name already exists");
         }
 
         existing.setName(request.getName());
@@ -72,7 +69,7 @@ public class SubredditService {
 
     public void deleteSubreddit(Long id) {
         Subreddit subreddit = subredditRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Subreddit not found"));
+                .orElseThrow(() -> new NotFoundException("Subreddit not found"));
         subredditRepository.delete(subreddit);
     }
 }

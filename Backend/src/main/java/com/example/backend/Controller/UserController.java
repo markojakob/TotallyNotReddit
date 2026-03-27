@@ -1,9 +1,9 @@
-package com.example.backend.controller;
+package com.example.backend.Controller;
 
 import com.example.backend.Dto.RequestDtos.CreateUserRequest;
 import com.example.backend.Dto.ResponseDtos.UserResponse;
-import com.example.backend.service.AuthService;
-import com.example.backend.service.UserService;
+import com.example.backend.Service.AuthService;
+import com.example.backend.Service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;

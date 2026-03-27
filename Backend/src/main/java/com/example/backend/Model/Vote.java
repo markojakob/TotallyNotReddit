@@ -1,8 +1,7 @@
-package com.example.backend.model;
+package com.example.backend.Model;
 import jakarta.persistence.*;
 
 import java.time.Instant;
-import java.util.Optional;
 
 
 @Entity

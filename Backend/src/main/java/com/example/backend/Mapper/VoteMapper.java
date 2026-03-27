@@ -1,7 +1,7 @@
 package com.example.backend.Mapper;
 
 import com.example.backend.Dto.ResponseDtos.VoteResponse;
-import com.example.backend.model.Vote;
+import com.example.backend.Model.Vote;
 
 public class VoteMapper {
     public static VoteResponse toResponse(Vote vote) {

@@ -1,12 +1,14 @@
-package com.example.backend.controller;
+package com.example.backend.Controller;
 
 import com.example.backend.Dto.RequestDtos.CreateSubredditRequest;
 import com.example.backend.Dto.ResponseDtos.PostResponse;
 import com.example.backend.Dto.ResponseDtos.SubredditResponse;
-import com.example.backend.service.AuthService;
-import com.example.backend.service.PostService;
-import com.example.backend.service.SubredditService;
+import com.example.backend.Model.User;
+import com.example.backend.Service.AuthService;
+import com.example.backend.Service.PostService;
+import com.example.backend.Service.SubredditService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -41,12 +43,13 @@ public class SubredditController {
         return ResponseEntity.ok(subredditService.getByName(name));
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping
     public ResponseEntity<SubredditResponse> createSubreddit(
             @RequestBody CreateSubredditRequest request) {
 
-        Long loggedUserId = authService.getCurrentUser().getId();
-        SubredditResponse saved = subredditService.createSubreddit(request, loggedUserId);
+        User user = authService.getCurrentUser();
+        SubredditResponse saved = subredditService.createSubreddit(request, user);
         return ResponseEntity.ok(saved);
     }
 
@@ -55,7 +58,7 @@ public class SubredditController {
         return postService.getPostsBySubreddit(name);
     }
 
-
+    @PreAuthorize("isAuthenticated()")
     @PutMapping("/{id}")
     public ResponseEntity<SubredditResponse> updateSubreddit(
             @PathVariable Long id,
@@ -65,6 +68,7 @@ public class SubredditController {
         return ResponseEntity.ok(updated);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteSubreddit(@PathVariable Long id) {
         subredditService.deleteSubreddit(id);

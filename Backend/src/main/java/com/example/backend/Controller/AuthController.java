@@ -1,10 +1,10 @@
-package com.example.backend.controller;
+package com.example.backend.Controller;
 
 import com.example.backend.Dto.RequestDtos.AuthLoginRequest;
 import com.example.backend.Dto.RequestDtos.AuthRegisterRequest;
 import com.example.backend.Dto.ResponseDtos.AuthResponse;
-import com.example.backend.service.AuthService;
-import com.example.backend.service.UserService;
+import com.example.backend.Service.AuthService;
+import com.example.backend.Service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,12 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/auth")
 @RestController
 public class AuthController {
-
-    private final UserService userService;
     private final AuthService authService;
 
-    public AuthController(UserService userService, AuthService authService) {
-        this.userService = userService;
+    public AuthController(AuthService authService) {
         this.authService = authService;
     }
 

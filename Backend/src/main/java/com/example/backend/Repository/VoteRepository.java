@@ -1,8 +1,8 @@
-package com.example.backend.repository;
+package com.example.backend.Repository;
 
-import com.example.backend.model.Post;
-import com.example.backend.model.User;
-import com.example.backend.model.Vote;
+import com.example.backend.Model.Post;
+import com.example.backend.Model.User;
+import com.example.backend.Model.Vote;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

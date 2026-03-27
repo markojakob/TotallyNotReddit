@@ -2,9 +2,9 @@ package com.example.backend.Mapper;
 
 import com.example.backend.Dto.RequestDtos.CreatePostRequest;
 import com.example.backend.Dto.ResponseDtos.PostResponse;
-import com.example.backend.model.Post;
-import com.example.backend.model.Subreddit;
-import com.example.backend.model.User;
+import com.example.backend.Model.Post;
+import com.example.backend.Model.Subreddit;
+import com.example.backend.Model.User;
 
 public class PostMapper {
 

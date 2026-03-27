@@ -1,16 +1,15 @@
-package com.example.backend.controller;
+package com.example.backend.Controller;
 
 import com.example.backend.Dto.RequestDtos.CreatePostRequest;
 import com.example.backend.Dto.RequestDtos.VoteRequest;
 import com.example.backend.Dto.ResponseDtos.PostResponse;
-import com.example.backend.Dto.ResponseDtos.VoteResponse;
 import com.example.backend.Dto.ResponseDtos.VoteResult;
-import com.example.backend.Mapper.VoteMapper;
-import com.example.backend.model.Vote;
-import com.example.backend.service.AuthService;
-import com.example.backend.service.PostService;
-import com.example.backend.service.VoteService;
+import com.example.backend.Model.User;
+import com.example.backend.Service.AuthService;
+import com.example.backend.Service.PostService;
+import com.example.backend.Service.VoteService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -41,21 +40,24 @@ public class PostController {
         return ResponseEntity.ok(postService.getPostById(id));
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping
     public ResponseEntity<PostResponse> createPost(
             @RequestBody CreatePostRequest request) {
-        Long loggedUserId = authService.getCurrentUser().getId();
-        PostResponse saved = postService.createPost(request, loggedUserId);
+        User user = authService.getCurrentUser();
+        PostResponse saved = postService.createPost(request, user);
         return ResponseEntity.ok(saved);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/{postId}/vote")
     public ResponseEntity<VoteResult> voteOnPost(
             @PathVariable Long postId,
             @RequestBody VoteRequest voteRequest) {
 
+        User user = authService.getCurrentUser();
         voteRequest.setPostId(postId);
-        VoteResult result = voteService.createPostVote(voteRequest);
+        VoteResult result = voteService.createPostVote(voteRequest, user);
         return ResponseEntity.ok(result);
     }
 }

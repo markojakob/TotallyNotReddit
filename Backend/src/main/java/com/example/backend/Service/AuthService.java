@@ -1,11 +1,11 @@
-package com.example.backend.service;
+package com.example.backend.Service;
 
 import com.example.backend.Dto.RequestDtos.AuthLoginRequest;
 import com.example.backend.Dto.RequestDtos.AuthRegisterRequest;
 import com.example.backend.Dto.ResponseDtos.AuthResponse;
-import com.example.backend.Dto.ResponseDtos.UserResponse;
-import com.example.backend.model.User;
-import com.example.backend.repository.UserRepository;
+import com.example.backend.Exception.UnauthorizedException;
+import com.example.backend.Model.User;
+import com.example.backend.Repository.UserRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -47,11 +47,11 @@ public class AuthService {
         User user = userRepository.findByUsername(request.getUserName());
 
         if (user == null) {
-            throw new RuntimeException("Invalid username or password");
+            throw new UnauthorizedException("Invalid login");
         }
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPasswordHash())){
-            throw new RuntimeException("Invalid username or password");
+            throw new UnauthorizedException("Invalid username or password");
         }
 
         String token = jwtService.generateToken(user.getUsername());
@@ -62,7 +62,7 @@ public class AuthService {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
         if (auth == null || !auth.isAuthenticated() || auth.getPrincipal() == "anonymousUser") {
-            throw new RuntimeException("No authenticated user found");
+            throw new UnauthorizedException("No authenticated user found");
         }
 
         return (User) auth.getPrincipal();

@@ -1,7 +1,7 @@
 package com.example.backend.Security;
 
-import com.example.backend.repository.UserRepository;
-import com.example.backend.service.JwtService;
+import com.example.backend.Repository.UserRepository;
+import com.example.backend.Service.JwtService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;

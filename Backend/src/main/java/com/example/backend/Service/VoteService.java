@@ -1,15 +1,13 @@
-package com.example.backend.service;
+package com.example.backend.Service;
 
 import com.example.backend.Dto.RequestDtos.VoteRequest;
-import com.example.backend.Dto.ResponseDtos.VoteResponse;
 import com.example.backend.Dto.ResponseDtos.VoteResult;
-import com.example.backend.Mapper.VoteMapper;
-import com.example.backend.model.Post;
-import com.example.backend.model.User;
-import com.example.backend.model.Vote;
-import com.example.backend.repository.PostRepository;
-import com.example.backend.repository.UserRepository;
-import com.example.backend.repository.VoteRepository;
+import com.example.backend.Exception.NotFoundException;
+import com.example.backend.Model.Post;
+import com.example.backend.Model.User;
+import com.example.backend.Model.Vote;
+import com.example.backend.Repository.PostRepository;
+import com.example.backend.Repository.VoteRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -20,21 +18,17 @@ public class VoteService {
 
     private final VoteRepository voteRepository;
     private final PostRepository postRepository;
-    private final AuthService authService;
 
-    public VoteService(VoteRepository voteRepository, PostRepository postRepository, UserRepository userRepository, AuthService authService) {
+    public VoteService(VoteRepository voteRepository, PostRepository postRepository) {
         this.voteRepository = voteRepository;
         this.postRepository = postRepository;
-        this.authService = authService;
     }
 
     @Transactional
-    public VoteResult createPostVote(VoteRequest request) {
-
-        User user = authService.getCurrentUser();
+    public VoteResult createPostVote(VoteRequest request, User user) {
 
         Post post = postRepository.findById(request.getPostId())
-                .orElseThrow(() -> new RuntimeException("Post not found"));
+                .orElseThrow(() -> new NotFoundException("Post not found"));
 
         Optional<Vote> existingVote = voteRepository.findByUserAndPost(user, post);
 
