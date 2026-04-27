@@ -1,11 +1,11 @@
 package com.example.backend.Dto.RequestDtos;
 
 public class AuthLoginRequest {
-    private String userName;
+    private String username;
     private String password;
 
-    public AuthLoginRequest(String userName, String password) {
-        this.userName = userName;
+    public AuthLoginRequest(String username, String password) {
+        this.username = username;
         this.password = password;
     }
 
@@ -14,8 +14,8 @@ public class AuthLoginRequest {
         return password;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getUsername() {
+        return username;
     }
 }
 

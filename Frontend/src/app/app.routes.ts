@@ -2,6 +2,8 @@ import { Routes } from '@angular/router';
 import { Main } from './pages/main/main';
 import { SubredditPage } from './pages/subreddit-page/subreddit-page';
 import { CommentsPage } from './pages/comments-page/comments-page';
+import { Register } from './pages/register/register';
+import { Login } from './pages/login/login';
 
 export const routes: Routes = [{
     path: '',
@@ -15,4 +17,12 @@ export const routes: Routes = [{
     path: 'r/:subredditname/comments/:postId/:postSlug?',
     component: CommentsPage
 },
+{
+    path: 'register',
+    component: Register
+},
+{
+    path: 'login',
+    component: Login
+}
 ];

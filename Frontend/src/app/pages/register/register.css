@@ -1,0 +1,12 @@
+.form-example {
+    margin-top: 3rem;
+    display: flex;
+    flex-direction: column;
+    max-width: 300px;
+    padding: 1rem;
+}
+
+.form-container {
+    display: flex;
+    justify-content: center;
+}

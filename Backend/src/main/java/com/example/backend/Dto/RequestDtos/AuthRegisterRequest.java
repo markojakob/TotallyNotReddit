@@ -1,12 +1,12 @@
 package com.example.backend.Dto.RequestDtos;
 
 public class AuthRegisterRequest {
-    private String userName;
+    private String username;
     private String password;
     private String email;
 
     public AuthRegisterRequest(String userName, String password, String email) {
-        this.userName = userName;
+        this.username = userName;
         this.password = password;
         this.email = email;
     }
@@ -15,8 +15,8 @@ public class AuthRegisterRequest {
         return password;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getUsername() {
+        return username;
     }
 
     public String getEmail() {

@@ -2,10 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { PostService } from '../../services/PostService';
 import { Post } from '../../models/post';
+import { Sidebar } from "../../components/sidebar/sidebar";
 
 @Component({
   selector: 'app-comments-page',
-  imports: [],
+  imports: [Sidebar],
   templateUrl: './comments-page.html',
   styleUrl: './comments-page.css',
 })

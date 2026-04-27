@@ -30,10 +30,10 @@ public class AuthService {
 
     public AuthResponse register(AuthRegisterRequest request) {
 
-        userService.validateUserDoesNotExist(request.getUserName(), request.getEmail());
+        userService.validateUserDoesNotExist(request.getUsername(), request.getEmail());
 
         User user = new User();
-        user.setUsername(request.getUserName());
+        user.setUsername(request.getUsername());
         user.setEmail(request.getEmail());
         user.setPasswordHash(passwordEncoder.encode(request.getPassword()));
         userRepository.save(user);
@@ -44,10 +44,10 @@ public class AuthService {
     }
 
     public AuthResponse login(AuthLoginRequest request) {
-        User user = userRepository.findByUsername(request.getUserName());
+        User user = userRepository.findByUsername(request.getUsername());
 
         if (user == null) {
-            throw new UnauthorizedException("Invalid login");
+            throw new UnauthorizedException("Invalid username or password");
         }
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPasswordHash())){
