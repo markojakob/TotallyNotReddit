@@ -103,7 +103,6 @@ http://localhost:4200/
 root/
 ├── backend/
 ├── frontend/
-├── docker-compose.yml
 └── README.md
 ```
 
