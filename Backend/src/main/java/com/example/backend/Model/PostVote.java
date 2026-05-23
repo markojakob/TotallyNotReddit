@@ -6,13 +6,12 @@ import java.time.Instant;
 
 @Entity
 @Table(
-        name = "votes",
+        name = "post_votes",
         uniqueConstraints = {
-                @UniqueConstraint(columnNames = {"user_id", "post_id"}),
-                @UniqueConstraint(columnNames = {"user_id", "comment_id"})
+                @UniqueConstraint(columnNames = {"user_id", "post_id"})
         }
 )
-public class Vote {
+public class PostVote {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -24,10 +23,6 @@ public class Vote {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
     private Post post;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "comment_id")
-    private Comment comment;
 
     @Column(name = "vote_value", nullable = false)
     private int voteValue;
@@ -57,14 +52,6 @@ public class Vote {
 
     public void setPost(Post post) {
         this.post = post;
-    }
-
-    public Comment getComment() {
-        return comment;
-    }
-
-    public void setComment(Comment comment) {
-        this.comment = comment;
     }
 
     public int getVoteValue() {

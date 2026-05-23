@@ -1,11 +1,11 @@
 package com.example.backend.Service;
 
-import com.example.backend.Dto.RequestDtos.VoteRequest;
+import com.example.backend.Dto.RequestDtos.PostVoteRequest;
 import com.example.backend.Dto.ResponseDtos.VoteResult;
 import com.example.backend.Exception.NotFoundException;
 import com.example.backend.Model.Post;
 import com.example.backend.Model.User;
-import com.example.backend.Model.Vote;
+import com.example.backend.Model.PostVote;
 import com.example.backend.Repository.PostRepository;
 import com.example.backend.Repository.VoteRepository;
 import jakarta.transaction.Transactional;
@@ -25,32 +25,42 @@ public class VoteService {
     }
 
     @Transactional
-    public VoteResult createPostVote(VoteRequest request, User user) {
-
+    public VoteResult createPostVote(PostVoteRequest request, User user) {
         Post post = postRepository.findById(request.getPostId())
                 .orElseThrow(() -> new NotFoundException("Post not found"));
 
-        Optional<Vote> existingVote = voteRepository.findByUserAndPost(user, post);
-
+        Optional<PostVote> existingVote = voteRepository.findByUserAndPost(user, post);
         int voteValue = request.getVoteValue();
+        int returnedVoteValue;
 
         if (existingVote.isPresent()) {
-            Vote oldVote = existingVote.get();
-            int difference = voteValue - oldVote.getVoteValue();
-            post.setScore(post.getScore() + difference);
-            oldVote.setVoteValue(voteValue);
-            voteRepository.save(oldVote);
-            postRepository.save(post);
+            PostVote oldPostVote = existingVote.get();
+
+            if (voteValue == 0 || oldPostVote.getVoteValue() == voteValue) {
+                voteRepository.delete(oldPostVote);
+                returnedVoteValue = 0;
+            } else {
+                oldPostVote.setVoteValue(voteValue);
+                voteRepository.save(oldPostVote);
+                returnedVoteValue = voteValue;
+            }
         } else {
-            Vote vote = new Vote();
-            vote.setPost(post);
-            vote.setUser(user);
-            vote.setVoteValue(voteValue);
-            voteRepository.save(vote);
-            post.setScore(post.getScore() + voteValue);
-            postRepository.save(post);
+            if (voteValue != 0) {
+                PostVote postVote = new PostVote();
+                postVote.setPost(post);
+                postVote.setUser(user);
+                postVote.setVoteValue(voteValue);
+                voteRepository.save(postVote);
+                returnedVoteValue = voteValue;
+            } else {
+                returnedVoteValue = 0;
+            }
         }
 
-        return new VoteResult(post.getScore(), voteValue);
+        int newScore = voteRepository.sumVotesByPost(post);
+        post.setScore(newScore);
+        postRepository.save(post);
+
+        return new VoteResult(newScore, returnedVoteValue);
     }
 }

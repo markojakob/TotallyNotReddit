@@ -9,3 +9,11 @@ databaseChangeLog:
       file: db/changelog/004-create-comments.yaml
   - include:
       file: db/changelog/005-create-votes.yaml
+  - include:
+      file: db/changelog/006-create-postvotes.yaml
+  - include:
+      file: db/changelog/007-create-commentvotes.yaml
+  - include:
+      file: db/changelog/008-add-created-at-to-comment-votes.yaml
+  - include:
+      file: db/changelog/009-add-created-at-to-post-votes.yaml

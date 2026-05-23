@@ -1,6 +1,6 @@
 package com.example.backend.Dto.RequestDtos;
 
-public class VoteRequest {
+public class PostVoteRequest {
     private Long postId;
     private Long userId;
     private int voteValue; // 1 = upvote, -1 = downvote

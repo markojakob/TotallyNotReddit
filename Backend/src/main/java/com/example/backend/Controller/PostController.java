@@ -1,13 +1,14 @@
 package com.example.backend.Controller;
 
 import com.example.backend.Dto.RequestDtos.CreatePostRequest;
-import com.example.backend.Dto.RequestDtos.VoteRequest;
+import com.example.backend.Dto.RequestDtos.PostVoteRequest;
 import com.example.backend.Dto.ResponseDtos.PostResponse;
 import com.example.backend.Dto.ResponseDtos.VoteResult;
 import com.example.backend.Model.User;
 import com.example.backend.Service.AuthService;
 import com.example.backend.Service.PostService;
 import com.example.backend.Service.VoteService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -43,7 +44,7 @@ public class PostController {
     @PreAuthorize("isAuthenticated()")
     @PostMapping
     public ResponseEntity<PostResponse> createPost(
-            @RequestBody CreatePostRequest request) {
+           @Valid @RequestBody CreatePostRequest request) {
         User user = authService.getCurrentUser();
         PostResponse saved = postService.createPost(request, user);
         return ResponseEntity.ok(saved);
@@ -53,11 +54,14 @@ public class PostController {
     @PostMapping("/{postId}/vote")
     public ResponseEntity<VoteResult> voteOnPost(
             @PathVariable Long postId,
-            @RequestBody VoteRequest voteRequest) {
+            @Valid @RequestBody PostVoteRequest postVoteRequest) {
+        System.out.println(">>> VoteService HIT userId=" + postVoteRequest.getUserId() +
+                " postId=" + postVoteRequest.getPostId() +
+                " value=" + postVoteRequest.getVoteValue());
 
         User user = authService.getCurrentUser();
-        voteRequest.setPostId(postId);
-        VoteResult result = voteService.createPostVote(voteRequest, user);
+        postVoteRequest.setPostId(postId);
+        VoteResult result = voteService.createPostVote(postVoteRequest, user);
         return ResponseEntity.ok(result);
     }
 }

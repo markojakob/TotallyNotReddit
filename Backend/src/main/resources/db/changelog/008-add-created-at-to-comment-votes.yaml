@@ -1,0 +1,18 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-created-at-to-comment-votes
+      author: you
+      preConditions:
+        - onFail: MARK_RAN
+          not:
+            columnExists:
+              tableName: comment_votes
+              columnName: created_at
+      changes:
+        - addColumn:
+            tableName: comment_votes
+            columns:
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: NOW()

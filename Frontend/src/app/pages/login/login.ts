@@ -1,16 +1,16 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../services/auth-service';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-login',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, RouterLink],
   templateUrl: './login.html',
   styleUrl: './login.css',
 })
 export class Login {
-  successMessage: String | null = null;
+  successMessage: string | null = null; // Cleaned up 'String' to lowercase primitive 'string'
   loginForm: FormGroup;
   errorMessage: string | null = null;
 
@@ -26,19 +26,23 @@ export class Login {
   }
 
   onSubmit() {
+    this.errorMessage = null; 
+    this.successMessage = null;
+
     this.authService.login(this.loginForm.value).subscribe({
       next: (res: any) => {
-        localStorage.setItem('token', res.token);
-        localStorage.setItem('username', res.username);
-
-        this.successMessage = `Welcome ${res.username}!`;
+        setTimeout(() => {
+          this.successMessage = `Welcome ${res.username}!`;
+        }, 0);
         setTimeout(() => {
           this.router.navigate(['/']);
         }, 1500);
       },
       error: (err) => {
         console.error(err);
-        this.errorMessage = 'Invalid credentials';
+        setTimeout(() => {
+          this.errorMessage = 'Invalid credentials';
+        }, 0);
       }
     });
   }

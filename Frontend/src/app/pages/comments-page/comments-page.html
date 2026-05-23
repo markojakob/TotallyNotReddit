@@ -8,17 +8,35 @@
     </div>
 
     <div class="bg-base-100 p-4 rounded-lg shadow">
-      <h1 class="text-2xl font-bold">{{ post.title }}</h1>
-      <p class="mt-2">{{ post.content }}</p>
-      <p class="text-sm text-gray-400 mt-2">by {{ post.username }}</p>
+      <h1 class="text-2xl font-bold">{{ post?.title }}</h1>
+      <p class="mt-2 text-gray-200 whitespace-pre-wrap">{{ post?.content }}</p>
+      <p class="text-sm text-gray-400 mt-4">Posted by u/{{ post?.username || 'anonymous' }}</p>
+    </div>
+
+    <div class="bg-base-100 p-4 rounded-lg shadow flex flex-col gap-2">
+      <textarea
+        class="textarea textarea-bordered w-full"
+        placeholder="Write a comment..."
+        [(ngModel)]="newCommentContent"
+        rows="3">
+      </textarea>
+      <button class="btn btn-primary self-end" (click)="submitComment()">Comment</button>
     </div>
 
     <div class="bg-base-100 p-4 rounded-lg shadow">
-      <h3 class="font-semibold mb-2">Comments</h3>
-      <p class="text-gray-400">
-        No comments yet. They will appear here once implemented.
-      </p>
+      <h3 class="font-semibold mb-4 text-lg">Comments ({{ comments.length }})</h3>
+      <div class="flex flex-col gap-4">
+        @for (comment of comments; track comment.id) {
+          <div class="border-l-2 border-gray-600 pl-4 py-1">
+            <div class="flex items-center gap-2 text-xs text-gray-400">
+              <span class="font-bold text-gray-300">u/{{ comment.username }}</span>
+            </div>
+            <p class="text-sm mt-1 text-gray-200">{{ comment.content }}</p>
+          </div>
+        } @empty {
+          <p class="text-gray-400 text-sm">No comments yet.</p>
+        }
+      </div>
     </div>
-
   </div>
 </div>

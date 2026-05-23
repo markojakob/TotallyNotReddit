@@ -14,7 +14,11 @@ export const routes: Routes = [{
     component: SubredditPage
 },
 {
-    path: 'r/:subredditname/comments/:postId/:postSlug?',
+    path: 'r/:subredditName/comments/:postId/:postSlug',
+    component: CommentsPage
+},
+{
+    path: 'r/:subredditName/comments/:postId',
     component: CommentsPage
 },
 {

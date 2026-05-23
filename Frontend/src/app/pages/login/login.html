@@ -1,9 +1,10 @@
-<div class="form-container flex flex-col justify-center items-center min-h-screen ">
+<div class="form-container flex flex-col justify-center items-center min-h-screen">
   @if (successMessage) {
   <div class="alert-success">
     {{ successMessage }}
   </div>
   }
+  
   <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="flex flex-col mt-4 gap-2 w-80">
 
     <h1 class="text-xl font-bold text-center">Login</h1>
@@ -22,8 +23,16 @@
       Login
     </button>
 
+    <!-- Navigation text link to Registration -->
+    <p class="text-xs text-center text-gray-500 mt-2">
+      Don't have an account? 
+      <a routerLink="/register" class="text-primary hover:underline font-semibold cursor-pointer">
+        Register here
+      </a>
+    </p>
+
     @if (errorMessage) {
-    <p class="text-red-500 text-sm">
+    <p class="text-red-500 text-sm text-center mt-1">
       {{ errorMessage }}
     </p>
     }

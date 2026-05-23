@@ -7,6 +7,7 @@ import com.example.backend.Model.User;
 import com.example.backend.Service.AuthService;
 import com.example.backend.Service.PostService;
 import com.example.backend.Service.SubredditService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -46,7 +47,7 @@ public class SubredditController {
     @PreAuthorize("isAuthenticated()")
     @PostMapping
     public ResponseEntity<SubredditResponse> createSubreddit(
-            @RequestBody CreateSubredditRequest request) {
+            @Valid @RequestBody CreateSubredditRequest request) {
 
         User user = authService.getCurrentUser();
         SubredditResponse saved = subredditService.createSubreddit(request, user);
@@ -62,7 +63,7 @@ public class SubredditController {
     @PutMapping("/{id}")
     public ResponseEntity<SubredditResponse> updateSubreddit(
             @PathVariable Long id,
-            @RequestBody CreateSubredditRequest request) {
+            @Valid @RequestBody CreateSubredditRequest request) {
 
         SubredditResponse updated = subredditService.updateSubreddit(id, request);
         return ResponseEntity.ok(updated);

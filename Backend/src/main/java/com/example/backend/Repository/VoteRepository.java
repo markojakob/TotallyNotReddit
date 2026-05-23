@@ -2,14 +2,19 @@ package com.example.backend.Repository;
 
 import com.example.backend.Model.Post;
 import com.example.backend.Model.User;
-import com.example.backend.Model.Vote;
+import com.example.backend.Model.PostVote;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
-public interface VoteRepository extends JpaRepository<Vote, Long> {
+public interface VoteRepository extends JpaRepository<PostVote, Long> {
 
-    Optional<Vote> findByUserAndPost(User user, Post post);
+    Optional<PostVote> findByUserAndPost(User user, Post post);
+
+    @Query("SELECT COALESCE(SUM(v.voteValue), 0) FROM PostVote v WHERE v.post = :post")
+    int sumVotesByPost(@Param("post") Post post);
 }

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Post} from '../models/post';
 import { VoteRequest } from '../models/vote-request';
@@ -38,6 +38,6 @@ deletePost(id: Number): Observable<Post> {
 
 voteOnPost(postId: number, voteRequest: VoteRequest): Observable<VoteResult> {
   return this.http.post<VoteResult>(`${this.baseApi}/${postId}/vote`, voteRequest);
-  }
+}
 
 }
