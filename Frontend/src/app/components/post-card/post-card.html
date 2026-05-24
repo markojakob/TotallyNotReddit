@@ -1,57 +1,66 @@
-<div class="flex border border-gray-200 rounded shadow-sm bg-white w-96">
-  <!-- Voting column -->
-  <div class="flex flex-col items-center bg-gray-50 p-2 w-12 select-none">
-    <!-- Upvote -->
-    <button
-      (click)="upvote()"
+@if (post) {
+<div class="flex border border-gray-700 rounded shadow-sm bg-base-200 w-96">
+  <div class="flex flex-col items-center bg-base-300 p-2 w-12 select-none">
+    <button (click)="upvote()"
       class="transition-colors duration-200 hover:text-orange-500 text-lg"
       [ngClass]="{
         'text-orange-500 font-bold': currentUserVote() === 1,
         'text-gray-400': currentUserVote() !== 1
-      }"
-    >
-      ▲
-    </button>
+      }">▲</button>
 
-    <!-- LIVE POST SCORE COUNT -->
     <span class="text-sm font-bold my-1 transition-colors duration-200"
-          [ngClass]="{
-            'text-orange-500': currentUserVote() === 1,
-            'text-blue-500': currentUserVote() === -1,
-            'text-gray-700': currentUserVote() === 0
-          }">
+      [ngClass]="{
+        'text-orange-500': currentUserVote() === 1,
+        'text-blue-500': currentUserVote() === -1,
+        'text-gray-200': currentUserVote() === 0
+      }">
       {{ post.score || 0 }}
     </span>
 
-    <!-- Downvote -->
-    <button
-      (click)="downvote()"
+    <button (click)="downvote()"
       class="transition-colors duration-200 hover:text-blue-500 text-lg"
       [ngClass]="{
         'text-blue-500 font-bold': currentUserVote() === -1,
         'text-gray-400': currentUserVote() !== -1
-      }"
-    >
-      ▼
-    </button>
+      }">▼</button>
   </div>
 
-  <!-- Post content column -->
-  <div class="flex-1 p-3 cursor-pointer"
-       [routerLink]="['/r', post.subredditName, 'comments', post.id, slugify(post.title)]">
-    <!-- Subreddit / info -->
-    <div class="text-xs text-gray-500 mb-1">
-      r/{{ post.subredditName || post.subredditId }}
+  <div class="flex-1 p-3">
+    <div class="flex justify-between items-start">
+      <div class="text-xs text-gray-400 mb-1">
+        r/{{ post.subredditName || post.subredditId }}
+      </div>
+
+      @if (isAuthor) {
+        <div class="dropdown dropdown-end">
+          <button tabindex="0" class="btn btn-ghost btn-xs text-gray-300">⋯</button>
+          <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box shadow z-10 w-32 p-1">
+            <li><a (click)="startEdit()">Edit</a></li>
+            <li><a (click)="confirmDelete()" class="text-error">Delete</a></li>
+          </ul>
+        </div>
+      }
     </div>
 
-    <!-- Title -->
-    <h2 class="font-semibold text-gray-900 text-md mb-1">
-      {{ post.title }}
-    </h2>
-
-    <!-- Content -->
-    <p class="text-gray-700 text-sm mb-2 line-clamp-7">
-      {{ post.content }}
-    </p>
+    <div class="cursor-pointer"
+         [routerLink]="['/r', post.subredditName, 'comments', post.id, slugify(post.title)]">
+      <h2 class="font-semibold text-white text-md mb-1">{{ post.title }}</h2>
+      <p class="text-gray-300 text-sm mb-2 line-clamp-7">{{ post.content }}</p>
+    </div>
   </div>
 </div>
+
+@if (showDeleteConfirm) {
+  <div class="modal modal-open">
+    <div class="modal-box">
+      <h3 class="font-bold text-lg">Delete post?</h3>
+      <p class="py-4">This cannot be undone.</p>
+      <div class="modal-action">
+        <button class="btn" (click)="cancelDelete()">Cancel</button>
+        <button class="btn btn-error" (click)="deletePost()">Delete</button>
+      </div>
+    </div>
+    <div class="modal-backdrop" (click)="cancelDelete()"></div>
+  </div>
+}
+}

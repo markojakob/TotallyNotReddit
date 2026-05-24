@@ -1,10 +1,14 @@
 <div class="hidden lg:flex flex-col w-80 border-r border-gray-200 min-h-screen p-4 gap-4">
     <a routerLink="/"><button class="btn flex items-center gap-2">
-            <img src="/home-line.svg" class="w-5 h-5" />
-            Home
-        </button></a>
+        <img src="/home-line.svg" class="w-5 h-5" />
+        Home
+    </button></a>
+
+    <a routerLink="/create-post"><button class="btn btn-primary w-full">Create Post</button></a>
+    <a routerLink="/create-subreddit"><button class="btn btn-outline w-full">Create Community</button></a>
+
     <div class="bg-base-100 shadow-md rounded-lg p-4 flex flex-col gap-4">
-        <h2 class="text-lg font-semibold  text-gray-500">TRENDING</h2>
+        <h2 class="text-lg font-semibold text-gray-500">TRENDING</h2>
         <ul class="flex flex-col gap-2 text-gray-200">
             @for (subreddit of subreddits; track $index) {
             <li>

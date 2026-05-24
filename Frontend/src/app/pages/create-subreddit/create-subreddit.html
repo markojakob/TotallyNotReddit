@@ -1,0 +1,59 @@
+<div class="flex min-h-screen">
+  <app-sidebar [subreddits]="subredditService.subreddits()"></app-sidebar>
+
+  <div class="flex flex-col flex-1 p-6 max-w-2xl mx-auto gap-4">
+    <h1 class="text-2xl font-bold">Create Community</h1>
+
+    @if (error) {
+      <div class="alert alert-error">{{ error }}</div>
+    }
+
+    <div class="flex flex-col gap-4 bg-base-100 p-6 rounded-lg shadow">
+
+      <div class="flex flex-col gap-1">
+        <label class="text-sm font-semibold">Community name</label>
+        <input
+          type="text"
+          class="input input-bordered w-full"
+          placeholder="e.g. programming"
+          [(ngModel)]="name"
+          maxlength="50"
+        />
+        <span class="text-xs text-gray-400">No spaces. This cannot be changed later.</span>
+      </div>
+
+      <div class="flex flex-col gap-1">
+        <label class="text-sm font-semibold">Description</label>
+        <textarea
+          class="textarea textarea-bordered w-full"
+          placeholder="What is your community about?"
+          [(ngModel)]="description"
+          rows="3">
+        </textarea>
+      </div>
+
+      <div class="flex flex-col gap-1">
+        <label class="text-sm font-semibold">Rules</label>
+        <textarea
+          class="textarea textarea-bordered w-full"
+          placeholder="Community rules (optional)"
+          [(ngModel)]="rules"
+          rows="3">
+        </textarea>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <input type="checkbox" class="checkbox" [(ngModel)]="isPrivate" />
+        <label class="text-sm">Private community</label>
+      </div>
+
+      <div class="flex justify-end gap-2">
+        <button class="btn" (click)="router.navigate(['/'])">Cancel</button>
+        <button class="btn btn-primary" (click)="submit()" [disabled]="submitting">
+          {{ submitting ? 'Creating...' : 'Create Community' }}
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>

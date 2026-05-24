@@ -1,0 +1,37 @@
+<div class="flex min-h-screen">
+  <app-sidebar [subreddits]="subredditService.subreddits()"></app-sidebar>
+
+  <div class="flex flex-col flex-1 p-6 max-w-2xl mx-auto gap-4">
+    <h1 class="text-2xl font-bold">Edit Post</h1>
+
+    @if (error) {
+      <div class="alert alert-error">{{ error }}</div>
+    }
+
+    <div class="flex flex-col gap-4 bg-base-100 p-6 rounded-lg shadow">
+
+      <input
+        type="text"
+        class="input input-bordered w-full"
+        placeholder="Title"
+        [(ngModel)]="title"
+        maxlength="300"
+      />
+
+      <textarea
+        class="textarea textarea-bordered w-full"
+        placeholder="Content"
+        [(ngModel)]="content"
+        rows="8">
+      </textarea>
+
+      <div class="flex justify-end gap-2">
+        <button class="btn" (click)="router.navigate(['/'])">Cancel</button>
+        <button class="btn btn-primary" (click)="submit()" [disabled]="submitting">
+          {{ submitting ? 'Saving...' : 'Save Changes' }}
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>

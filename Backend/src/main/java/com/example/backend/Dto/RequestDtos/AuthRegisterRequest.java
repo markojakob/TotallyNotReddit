@@ -5,8 +5,8 @@ public class AuthRegisterRequest {
     private String password;
     private String email;
 
-    public AuthRegisterRequest(String userName, String password, String email) {
-        this.username = userName;
+    public AuthRegisterRequest(String username, String password, String email) {
+        this.username = username;
         this.password = password;
         this.email = email;
     }

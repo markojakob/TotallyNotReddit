@@ -12,6 +12,8 @@ public class PostResponse {
     private Long subredditId;     // needed if you want to send subredditId
     private String subredditName;
     private Integer score;
+    private Integer currentUserVote = 0;
+
     private String mediaUrl;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -20,7 +22,7 @@ public class PostResponse {
                         Long userId, String username,
                         Long subredditId, String subredditName,
                         Integer score, String mediaUrl,
-                        LocalDateTime createdAt, LocalDateTime updatedAt) {
+                        LocalDateTime createdAt, LocalDateTime updatedAt, Integer currentUserVote) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -32,6 +34,7 @@ public class PostResponse {
         this.mediaUrl = mediaUrl;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.currentUserVote = currentUserVote;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -120,5 +123,13 @@ public class PostResponse {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public Integer getCurrentUserVote() {
+        return currentUserVote;
+    }
+
+    public void setCurrentUserVote(Integer currentUserVote) {
+        this.currentUserVote = currentUserVote;
     }
 }

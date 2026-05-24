@@ -1,18 +1,20 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PostService } from '../../services/PostService';
 import { CommentService, CommentResponse } from '../../services/comment-service';
 import { Post } from '../../models/post';
 import { Sidebar } from "../../components/sidebar/sidebar";
-import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 import { forkJoin, take } from 'rxjs';
 import { AuthService } from '../../services/auth-service';
 import { LoginPromptService } from '../../services/login-prompt-service';
+import { VoteService } from '../../services/vote-service';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-comments-page',
   standalone: true,
-  imports: [Sidebar, FormsModule],
+  imports: [Sidebar, CommonModule, FormsModule],
   templateUrl: './comments-page.html',
   styleUrl: './comments-page.css',
 })
@@ -22,6 +24,9 @@ export class CommentsPage implements OnInit {
   subredditName!: string;
   comments: CommentResponse[] = [];
   newCommentContent = '';
+  currentUserVote = signal<number>(0);
+  currentUsername = localStorage.getItem('username') ?? '';
+  commentToDelete: CommentResponse | null = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -30,8 +35,9 @@ export class CommentsPage implements OnInit {
     private cdr: ChangeDetectorRef,
     private authService: AuthService,
     private loginPromptService: LoginPromptService,
+    private voteService: VoteService,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.route.paramMap.pipe(take(1)).subscribe(params => {
@@ -48,6 +54,7 @@ export class CommentsPage implements OnInit {
           next: ({ post, comments }) => {
             this.post = post;
             this.comments = comments;
+            this.currentUserVote.set((post as any).currentUserVote ?? 0); // ← add this
             this.cdr.detectChanges();
           },
           error: (err) => console.error('forkJoin failed:', err)
@@ -56,16 +63,24 @@ export class CommentsPage implements OnInit {
     });
   }
 
-  loadComments() {
-    this.commentService.getByPostId(this.postId).subscribe({
-      next: (data) => this.comments = data,
-      error: (err) => console.error('Could not fetch comments:', err)
+  vote(clickedValue: number) {
+    if (!this.post) return;
+    const result$ = this.voteService.handleVote(this.post.id, this.currentUserVote(), clickedValue);
+    if (!result$) return;
+
+    result$.subscribe({
+      next: (result) => {
+        this.post!.score = result.newPostScore;
+        this.currentUserVote.set(result.voteValue);
+        this.cdr.detectChanges();
+      },
+      error: (err) => console.error('Vote error:', err)
     });
   }
 
   submitComment() {
     if (!this.authService.isAuthenticated()) {
-      this.loginPromptService.show(); // ← use the global service
+      this.loginPromptService.show();
       return;
     }
     if (!this.newCommentContent.trim()) return;
@@ -82,4 +97,28 @@ export class CommentsPage implements OnInit {
       error: (err) => console.error('Failed to post comment:', err)
     });
   }
+
+  startEditComment(comment: CommentResponse) {
+  this.router.navigate(['/comments', comment.id, 'edit']);
+}
+
+confirmDeleteComment(comment: CommentResponse) {
+  this.commentToDelete = comment;
+}
+
+cancelDeleteComment() {
+  this.commentToDelete = null;
+}
+
+deleteComment() {
+  if (!this.commentToDelete) return;
+  this.commentService.deleteComment(this.commentToDelete.id).subscribe({
+    next: () => {
+      this.comments = this.comments.filter(c => c.id !== this.commentToDelete!.id);
+      this.commentToDelete = null;
+      this.cdr.detectChanges();
+    },
+    error: (err) => console.error('Delete comment failed:', err)
+  });
+}
 }

@@ -6,6 +6,8 @@ import com.example.backend.Model.User;
 import com.example.backend.Service.AuthService;
 import com.example.backend.Service.CommentService;
 import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,5 +33,21 @@ public class CommentController {
     public CommentResponse createComment(@Valid @RequestBody CreateCommentRequest request) {
         User currentUser = authService.getCurrentUser();
         return commentService.createComment(request, currentUser);
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @PutMapping("/{id}")
+    public CommentResponse updateComment(@PathVariable Long id,
+                                         @RequestBody CreateCommentRequest request) {
+        User currentUser = authService.getCurrentUser();
+        return commentService.updateComment(id, request, currentUser);
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteComment(@PathVariable Long id) {
+        User currentUser = authService.getCurrentUser();
+        commentService.deleteComment(id, currentUser);
+        return ResponseEntity.noContent().build();
     }
 }

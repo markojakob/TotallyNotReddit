@@ -1,4 +1,4 @@
-// src/app/components/login-prompt-modal/login-prompt-modal.ts
+
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({

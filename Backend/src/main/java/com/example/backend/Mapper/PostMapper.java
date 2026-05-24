@@ -17,7 +17,7 @@ public class PostMapper {
         return post;
     }
 
-    public static PostResponse toResponse(Post post) {
+    public static PostResponse toResponse(Post post, Integer currentUserVote) {
         return new PostResponse(
                 post.getId(),
                 post.getTitle(),
@@ -29,7 +29,12 @@ public class PostMapper {
                 post.getScore(),
                 post.getMediaUrl(),
                 post.getCreatedAt(),
-                post.getUpdatedAt()
+                post.getUpdatedAt(),
+                currentUserVote != null ? currentUserVote : 0
         );
+    }
+
+    public static PostResponse toResponse(Post post) {
+        return toResponse(post, 0);
     }
 }

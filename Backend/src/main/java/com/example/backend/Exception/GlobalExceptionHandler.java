@@ -1,4 +1,4 @@
-package com.example.backend.exception;
+package com.example.backend.Exception;
 
 import com.example.backend.Exception.BadRequestException;
 import com.example.backend.Exception.ForbiddenException;

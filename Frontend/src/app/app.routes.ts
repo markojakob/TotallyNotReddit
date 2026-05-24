@@ -4,29 +4,22 @@ import { SubredditPage } from './pages/subreddit-page/subreddit-page';
 import { CommentsPage } from './pages/comments-page/comments-page';
 import { Register } from './pages/register/register';
 import { Login } from './pages/login/login';
+import { CreatePost } from './pages/create-post/create-post';
+import { CreateSubreddit } from './pages/create-subreddit/create-subreddit';
+import { EditPost } from './pages/edit-post/edit-post';
+import { EditComment } from './pages/edit-comment/edit-comment';
 
-export const routes: Routes = [{
-    path: '',
-    component: Main
-},
-{
-    path: 'r/:subredditName',
-    component: SubredditPage
-},
-{
-    path: 'r/:subredditName/comments/:postId/:postSlug',
-    component: CommentsPage
-},
-{
-    path: 'r/:subredditName/comments/:postId',
-    component: CommentsPage
-},
-{
-    path: 'register',
-    component: Register
-},
-{
-    path: 'login',
-    component: Login
-}
+export const routes: Routes = [
+  { path: '', component: Main },
+  { path: 'r/:subredditName', component: SubredditPage },
+  { path: 'r/:subredditName/comments/:postId/:postSlug', component: CommentsPage },
+
+  { path: 'register', component: Register },
+  { path: 'login', component: Login },
+
+  { path: 'create-post', component: CreatePost },
+  { path: 'create-subreddit', component: CreateSubreddit },
+
+  { path: 'posts/:postId/edit', component: EditPost },
+  { path: 'comments/:commentId/edit', component: EditComment },
 ];

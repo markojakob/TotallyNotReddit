@@ -64,4 +64,22 @@ public class PostController {
         VoteResult result = voteService.createPostVote(postVoteRequest, user);
         return ResponseEntity.ok(result);
     }
+
+    @PreAuthorize("isAuthenticated()")
+    @PutMapping("/{id}")
+    public ResponseEntity<PostResponse> updatePost(
+            @PathVariable Long id,
+            @Valid @RequestBody CreatePostRequest request) {
+        User user = authService.getCurrentUser();
+        PostResponse updated = postService.updatePost(id, request, user);
+        return ResponseEntity.ok(updated);
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletePost(@PathVariable Long id) {
+        User user = authService.getCurrentUser();
+        postService.deletePost(id, user);
+        return ResponseEntity.noContent().build();
+    }
 }

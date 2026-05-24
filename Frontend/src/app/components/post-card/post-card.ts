@@ -1,12 +1,12 @@
 import { Component, Input, OnInit, signal } from '@angular/core';
+import { VoteService } from '../../services/vote-service';
 import { PostService } from '../../services/PostService';
+import { AuthService } from '../../services/auth-service';
+import { Router } from '@angular/router';
 import { Post } from '../../models/post';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { VoteRequest } from '../../models/vote-request'; 
-import { VoteResult } from '../../models/vote-result';   
-import { LoginPromptService } from '../../services/login-prompt-service';
-import { AuthService } from '../../services/auth-service';
+import { VoteResult } from '../../models/vote-result';
 
 @Component({
   selector: 'app-post-card',
@@ -17,14 +17,17 @@ import { AuthService } from '../../services/auth-service';
 })
 export class PostCard implements OnInit {
   @Input({ required: true }) post!: Post;
-
-  // Track this specific card's vote status reactively
   currentUserVote = signal<number>(0);
+  showDeleteConfirm = false;
 
-  constructor(private postService: PostService, private loginPromptService: LoginPromptService, private authService: AuthService) {}
+  constructor(
+    private voteService: VoteService,
+    private postService: PostService,
+    public authService: AuthService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
-    // ✅ FIXES REFRESH COLORING safely checking for undefined instead of falsy 0
     const rawPost = this.post as any;
     if (rawPost.currentUserVote !== undefined) {
       this.currentUserVote.set(rawPost.currentUserVote);
@@ -35,38 +38,38 @@ export class PostCard implements OnInit {
     }
   }
 
-  upvote(): void {
-    this.handleVoteUpdate(1);
+  get isAuthor(): boolean {
+    const username = localStorage.getItem('username');
+    return !!username && username === this.post.username;
   }
 
-  downvote(): void {
-    this.handleVoteUpdate(-1);
-  }
+  upvote(): void { this.handleVoteUpdate(1); }
+  downvote(): void { this.handleVoteUpdate(-1); }
 
   private handleVoteUpdate(clickedValue: number): void {
-      if (!this.authService.isAuthenticated()) {
-    this.loginPromptService.show();
-    return;
-  }
-    // If clicking the same arrow twice, turn it off (0)
-    const targetValue = this.currentUserVote() === clickedValue ? 0 : clickedValue;
+    const result$ = this.voteService.handleVote(this.post.id, this.currentUserVote(), clickedValue);
+    if (!result$) return;
 
-    const requestPayload: VoteRequest = {
-      postId: this.post.id,
-      userId: 0, 
-      voteValue: targetValue as (1 | -1 | 0)
-    };
-
-    this.postService.voteOnPost(this.post.id, requestPayload).subscribe({
+    result$.subscribe({
       next: (result: VoteResult) => {
         this.post.score = result.newPostScore;
-        
-        // This updates the signal to instantly flip the arrow colors
-        this.currentUserVote.set(result.voteValue); 
+        this.currentUserVote.set(result.voteValue);
       },
-      error: (err) => {
-        console.error('Voting transmission error:', err);
-      }
+      error: (err) => console.error('Vote error:', err)
+    });
+  }
+
+  startEdit(): void {
+    this.router.navigate(['/posts', this.post.id, 'edit']);
+  }
+
+  confirmDelete(): void { this.showDeleteConfirm = true; }
+  cancelDelete(): void { this.showDeleteConfirm = false; }
+
+  deletePost(): void {
+    this.postService.deletePost(this.post.id).subscribe({
+      next: () => { this.post = null as any; },
+      error: (err) => console.error('Delete failed:', err)
     });
   }
 

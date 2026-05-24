@@ -2,6 +2,7 @@ package com.example.backend.Service;
 
 import com.example.backend.Dto.RequestDtos.CreateCommentRequest;
 import com.example.backend.Dto.ResponseDtos.CommentResponse;
+import com.example.backend.Exception.ForbiddenException;
 import com.example.backend.Exception.NotFoundException;
 import com.example.backend.Mapper.CommentMapper;
 import com.example.backend.Model.Comment;
@@ -41,5 +42,30 @@ public class CommentService {
         commentRepository.save(comment);
 
         return CommentMapper.toResponse(comment);
+    }
+
+    public CommentResponse updateComment(Long id, CreateCommentRequest request, User currentUser) {
+        Comment comment = commentRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Comment not found"));
+
+        if (!comment.getUser().getId().equals(currentUser.getId())) {
+            throw new ForbiddenException("You can only edit your own comments");
+        }
+
+        comment.setContent(request.getContent());
+        commentRepository.save(comment);
+
+        return CommentMapper.toResponse(comment);
+    }
+
+    public void deleteComment(Long id, User currentUser) {
+        Comment comment = commentRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Comment not found"));
+
+        if (!comment.getUser().getId().equals(currentUser.getId())) {
+            throw new ForbiddenException("You can only delete your own comments");
+        }
+
+        commentRepository.delete(comment);
     }
 }

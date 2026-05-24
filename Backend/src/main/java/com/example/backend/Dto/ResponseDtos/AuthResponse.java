@@ -2,17 +2,17 @@ package com.example.backend.Dto.ResponseDtos;
 
 public class AuthResponse {
     private String token;
-    private String userName;
+    private String username;
     private String email;
 
-    public AuthResponse(String token, String userName, String email) {
+    public AuthResponse(String token, String username, String email) {
         this.token = token;
-        this.userName = userName;
+        this.username = username;
         this.email = email;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getUsername() {
+        return username;
     }
 
     public String getEmail() {
@@ -32,6 +32,6 @@ public class AuthResponse {
     }
 
     public void setUserName(String userName) {
-        this.userName = userName;
+        this.username = userName;
     }
 }

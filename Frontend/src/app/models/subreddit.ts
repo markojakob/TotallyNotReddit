@@ -3,10 +3,10 @@ export interface Subreddit {
   id: number;
   name: string;
   description: string | null;
-  createdById: number | null;   // backend createdBy.id
-  createdByUsername: string | null; // backend createdBy.username
+  createdById: number | null;  
+  createdByUsername: string | null; 
   rules: string | null;
   isPrivate: boolean;
-  createdAt: string;            // ISO date string from backend
-  postsCount?: number;          // optional: number of posts
+  createdAt: string;   
+  postsCount?: number;         
 }

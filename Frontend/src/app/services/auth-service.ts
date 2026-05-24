@@ -31,6 +31,7 @@ export class AuthService {
     return this.http.post<any>(`${this.baseApi}/login`, dto).pipe(
       tap({
         next: (res) => {
+          console.log('login response:', res);
           localStorage.setItem('token', res.token);
           localStorage.setItem('username', res.username);
           this.isAuthenticated.set(true);

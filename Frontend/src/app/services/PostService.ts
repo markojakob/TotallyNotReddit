@@ -36,8 +36,5 @@ deletePost(id: Number): Observable<Post> {
   return this.http.delete<Post>(`${this.baseApi}/${id}`);
 }
 
-voteOnPost(postId: number, voteRequest: VoteRequest): Observable<VoteResult> {
-  return this.http.post<VoteResult>(`${this.baseApi}/${postId}/vote`, voteRequest);
-}
 
 }
