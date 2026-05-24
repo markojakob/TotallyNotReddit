@@ -25,7 +25,7 @@ A Reddit clone app. Built with Spring Boot and Angular using postgresql database
 
 **Build Tools**
 
-* Maven / Gradle
+* Maven
 * Angular CLI
 
 ---
@@ -110,9 +110,12 @@ root/
 
 # 🧪 Development Notes
 
-* Backend runs on default Spring Boot port `8080`
+* Backend runs on default Spring Boot port `8081`
 * Frontend runs on `4200`
 * PostgreSQL runs on `5432`
+* On first run, the backend will automatically seed the database 
+with sample users, subreddits, posts, and comments.
+Login with any seeded user or create a new user
 
 ---
 
