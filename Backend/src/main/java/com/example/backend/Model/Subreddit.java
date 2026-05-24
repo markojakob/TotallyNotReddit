@@ -8,7 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "subreddits")
+@Table(name = "subreddits", indexes = {
+        @Index(name = "idx_subreddit_name", columnList = "name")
+})
 public class Subreddit {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

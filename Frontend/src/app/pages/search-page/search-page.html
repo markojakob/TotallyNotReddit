@@ -1,0 +1,57 @@
+<div class="flex flex-col gap-6 p-6 max-w-2xl mx-auto">
+
+  <div class="flex gap-2">
+    <input type="text" class="input input-bordered flex-1"
+      placeholder="Search..." [(ngModel)]="query"
+      (keydown.enter)="submitSearch()" />
+    <button class="btn btn-primary" (click)="submitSearch()">Search</button>
+  </div>
+
+  <div class="flex gap-2">
+    <button class="btn btn-sm" [class.btn-primary]="activeTab === 'posts'"
+      (click)="activeTab = 'posts'">
+      Posts ({{ posts.length }})
+    </button>
+    <button class="btn btn-sm" [class.btn-primary]="activeTab === 'subreddits'"
+      (click)="activeTab = 'subreddits'">
+      Communities ({{ subreddits.length }})
+    </button>
+  </div>
+
+  @if (loading) {
+    <div class="flex justify-center">
+      <span class="loading loading-spinner loading-lg"></span>
+    </div>
+  }
+
+  @if (activeTab === 'posts') {
+    <div class="flex flex-col gap-4">
+      @for (post of posts; track post.id) {
+        <app-post-card [post]="post" />
+      } @empty {
+        @if (!loading) {
+          <p class="text-gray-400">No posts found for "{{ query }}".</p>
+        }
+      }
+    </div>
+  }
+
+  @if (activeTab === 'subreddits') {
+    <div class="flex flex-col gap-3">
+      @for (sub of subreddits; track sub.id) {
+        <a [routerLink]="['/r', sub.name]"
+           class="bg-base-100 p-4 rounded-lg shadow flex items-center justify-between hover:bg-base-200 transition-colors">
+          <div>
+            <p class="font-bold">r/{{ sub.name }}</p>
+            <p class="text-sm text-gray-400">{{ sub.description || 'No description.' }}</p>
+          </div>
+          <span class="text-xs text-gray-500">{{ sub.membersCount ?? 0 }} members</span>
+        </a>
+      } @empty {
+        @if (!loading) {
+          <p class="text-gray-400">No communities found for "{{ query }}".</p>
+        }
+      }
+    </div>
+  }
+</div>

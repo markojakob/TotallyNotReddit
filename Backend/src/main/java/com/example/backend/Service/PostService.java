@@ -88,6 +88,7 @@ public class PostService {
 
         post.setTitle(request.getTitle());
         post.setContent(request.getContent());
+        post.setMediaUrl(request.getMediaUrl());
         postRepository.save(post);
 
         return PostMapper.toResponse(post, getCurrentUserVote(post));
@@ -110,4 +111,12 @@ public class PostService {
                 .map(post -> PostMapper.toResponse(post, getCurrentUserVote(post)))
                 .toList();
     }
+
+    public List<PostResponse> searchPosts(String query) {
+        return postRepository.searchByTitleOrContent(query)
+                .stream()
+                .map(post -> PostMapper.toResponse(post, getCurrentUserVote(post)))
+                .toList();
+    }
+
 }

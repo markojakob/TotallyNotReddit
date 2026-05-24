@@ -1,15 +1,12 @@
 @if (post) {
 <div class="flex border border-gray-700 rounded shadow-sm bg-base-200 w-full">
   <div class="flex flex-col items-center bg-base-300 p-2 w-12 select-none">
-    <button (click)="upvote()"
-      class="transition-colors duration-200 hover:text-orange-500 text-lg"
-      [ngClass]="{
+    <button (click)="upvote()" class="transition-colors duration-200 hover:text-orange-500 text-lg" [ngClass]="{
         'text-orange-500 font-bold': currentUserVote() === 1,
         'text-gray-400': currentUserVote() !== 1
       }">▲</button>
 
-    <span class="text-sm font-bold my-1 transition-colors duration-200"
-      [ngClass]="{
+    <span class="text-sm font-bold my-1 transition-colors duration-200" [ngClass]="{
         'text-orange-500': currentUserVote() === 1,
         'text-blue-500': currentUserVote() === -1,
         'text-gray-200': currentUserVote() === 0
@@ -17,9 +14,7 @@
       {{ post.score || 0 }}
     </span>
 
-    <button (click)="downvote()"
-      class="transition-colors duration-200 hover:text-blue-500 text-lg"
-      [ngClass]="{
+    <button (click)="downvote()" class="transition-colors duration-200 hover:text-blue-500 text-lg" [ngClass]="{
         'text-blue-500 font-bold': currentUserVote() === -1,
         'text-gray-400': currentUserVote() !== -1
       }">▼</button>
@@ -32,35 +27,38 @@
       </div>
 
       @if (isAuthor) {
-        <div class="dropdown dropdown-end">
-          <button tabindex="0" class="btn btn-ghost btn-xs text-gray-300">⋯</button>
-          <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box shadow z-10 w-32 p-1">
-            <li><a (click)="startEdit()">Edit</a></li>
-            <li><a (click)="confirmDelete()" class="text-error">Delete</a></li>
-          </ul>
-        </div>
+      <div class="dropdown dropdown-end">
+        <button tabindex="0" class="btn btn-ghost btn-xs text-gray-300">⋯</button>
+        <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box shadow z-10 w-32 p-1">
+          <li><a (click)="startEdit()">Edit</a></li>
+          <li><a (click)="confirmDelete()" class="text-error">Delete</a></li>
+        </ul>
+      </div>
       }
     </div>
 
-    <div class="cursor-pointer"
-         [routerLink]="['/r', post.subredditName, 'comments', post.id, slugify(post.title)]">
+    <div class="cursor-pointer" [routerLink]="['/r', post.subredditName, 'comments', post.id, slugify(post.title)]">
       <h2 class="font-semibold text-white text-md mb-1">{{ post.title }}</h2>
       <p class="text-gray-300 text-sm mb-2 line-clamp-7">{{ post.content }}</p>
+      @if (post.mediaUrl) {
+      <img [src]="post.mediaUrl" class="w-full max-h-96 object-cover rounded mt-2"
+        onerror="this.style.display='none'" />
+      }
     </div>
   </div>
 </div>
 
 @if (showDeleteConfirm) {
-  <div class="modal modal-open">
-    <div class="modal-box">
-      <h3 class="font-bold text-lg">Delete post?</h3>
-      <p class="py-4">This cannot be undone.</p>
-      <div class="modal-action">
-        <button class="btn" (click)="cancelDelete()">Cancel</button>
-        <button class="btn btn-error" (click)="deletePost()">Delete</button>
-      </div>
+<div class="modal modal-open">
+  <div class="modal-box">
+    <h3 class="font-bold text-lg">Delete post?</h3>
+    <p class="py-4">This cannot be undone.</p>
+    <div class="modal-action">
+      <button class="btn" (click)="cancelDelete()">Cancel</button>
+      <button class="btn btn-error" (click)="deletePost()">Delete</button>
     </div>
-    <div class="modal-backdrop" (click)="cancelDelete()"></div>
   </div>
+  <div class="modal-backdrop" (click)="cancelDelete()"></div>
+</div>
 }
 }

@@ -12,6 +12,7 @@ public class PostMapper {
         Post post = new Post();
         post.setTitle(request.getTitle());
         post.setContent(request.getContent());
+        post.setMediaUrl(request.getMediaUrl());
         post.setUser(user);
         post.setSubreddit(subreddit);
         return post;

@@ -20,42 +20,46 @@
         </div>
         <h1 class="text-2xl font-bold">{{ post.title }}</h1>
         <p class="mt-2 text-gray-200 whitespace-pre-wrap">{{ post.content }}</p>
+        @if (post.mediaUrl) {
+        <img [src]="post.mediaUrl" class="w-full max-h-96 object-cover rounded mt-4"
+          onerror="this.style.display='none'" />
         }
-      </div>
 
-      <!-- Vote + comment count bar -->
-      <div class="flex items-center gap-3">
-        <div class="flex items-center gap-1 bg-base-300 rounded-full px-3 py-1">
-          <button class="btn btn-ghost btn-xs px-1" (click)="vote(1)" [ngClass]="{
-            'text-orange-500': currentUserVote() === 1,
-            'text-gray-400': currentUserVote() !== 1
-          }">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 4l8 8H4z" />
-            </svg>
-          </button>
-          <span class="text-sm font-bold min-w-6 text-center" [ngClass]="{
-            'text-orange-500': currentUserVote() === 1,
-            'text-blue-500': currentUserVote() === -1,
-            'text-gray-700': currentUserVote() === 0
-          }">{{ post?.score }}</span>
-          <button class="btn btn-ghost btn-xs px-1" (click)="vote(-1)" [ngClass]="{
-            'text-blue-500': currentUserVote() === -1,
-            'text-gray-400': currentUserVote() !== -1
-          }">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 20l-8-8h16z" />
-            </svg>
-          </button>
-        </div>
+        <div class="flex items-center gap-3 mt-4">
+          <div class="flex items-center gap-1 bg-base-300 rounded-full px-3 py-1">
+            <button class="btn btn-ghost btn-xs px-1" (click)="vote(1)" [ngClass]="{
+          'text-orange-500': currentUserVote() === 1,
+          'text-gray-400': currentUserVote() !== 1
+        }">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 4l8 8H4z" />
+              </svg>
+            </button>
+            <span class="text-sm font-bold min-w-6 text-center" [ngClass]="{
+          'text-orange-500': currentUserVote() === 1,
+          'text-blue-500': currentUserVote() === -1,
+          'text-gray-700': currentUserVote() === 0
+        }">{{ post.score }}</span>
+            <button class="btn btn-ghost btn-xs px-1" (click)="vote(-1)" [ngClass]="{
+          'text-blue-500': currentUserVote() === -1,
+          'text-gray-400': currentUserVote() !== -1
+        }">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 20l-8-8h16z" />
+              </svg>
+            </button>
+          </div>
 
-        <div class="flex items-center gap-2 bg-base-300 rounded-full px-3 py-1">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M8 10h.01M12 10h.01M16 10h.01M21 16c0 1.1-.9 2-2 2H7l-4 4V6a2 2 0 012-2h14a2 2 0 012 2v10z" />
-          </svg>
-          <span class="text-sm font-bold">{{ comments.length }}</span>
+          <div class="flex items-center gap-2 bg-base-300 rounded-full px-3 py-1">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M8 10h.01M12 10h.01M16 10h.01M21 16c0 1.1-.9 2-2 2H7l-4 4V6a2 2 0 012-2h14a2 2 0 012 2v10z" />
+            </svg>
+            <span class="text-sm font-bold">{{ comments.length }}</span>
+          </div>
         </div>
+        }
       </div>
 
       <!-- Comment box -->

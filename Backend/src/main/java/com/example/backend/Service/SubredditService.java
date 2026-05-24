@@ -74,4 +74,12 @@ public class SubredditService {
                 .orElseThrow(() -> new NotFoundException("Subreddit not found"));
         subredditRepository.delete(subreddit);
     }
+
+    @Transactional(readOnly = true)
+    public List<SubredditResponse> searchSubreddits(String query) {
+        return subredditRepository.searchByName(query)
+                .stream()
+                .map(SubredditMapper::toResponse)
+                .toList();
+    }
 }

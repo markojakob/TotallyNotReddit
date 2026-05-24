@@ -9,6 +9,7 @@ import { CreateSubreddit } from './pages/create-subreddit/create-subreddit';
 import { EditPost } from './pages/edit-post/edit-post';
 import { EditComment } from './pages/edit-comment/edit-comment';
 import { ProfilePage } from './pages/profile-page/profile-page';
+import { SearchPage } from './pages/search-page/search-page';
 
 export const routes: Routes = [
   { path: '', component: Main },
@@ -24,4 +25,5 @@ export const routes: Routes = [
 
   { path: 'posts/:postId/edit', component: EditPost },
   { path: 'comments/:commentId/edit', component: EditComment },
+  { path: 'search', component: SearchPage }
 ];

@@ -19,6 +19,7 @@ import { Subreddit } from '../../models/subreddit';
 export class CreatePost implements OnInit {
   title = '';
   content = '';
+  mediaUrl = ''; 
   selectedSubredditId: number | null = null;
   submitting = false;
   error = '';
@@ -41,9 +42,9 @@ export class CreatePost implements OnInit {
     this.subredditService.fetchSubreddits();
   }
 
-  submit() {
-    if (!this.title.trim() || !this.content.trim() || !this.selectedSubredditId) {
-      this.error = 'Please fill in all fields and select a subreddit.';
+   submit() {
+    if (!this.title.trim() || !this.selectedSubredditId) {
+      this.error = 'Please fill in title and select a subreddit.';
       return;
     }
 
@@ -53,11 +54,10 @@ export class CreatePost implements OnInit {
     this.postService.createPost({
       title: this.title,
       content: this.content,
-      subredditId: this.selectedSubredditId
+      subredditId: this.selectedSubredditId,
+      mediaUrl: this.mediaUrl || null
     }).subscribe({
-      next: (post) => {
-        this.router.navigate(['/r', post.subredditName]);
-      },
+      next: (post) => this.router.navigate(['/r', post.subredditName]),
       error: (err) => {
         console.error('Failed to create post:', err);
         this.error = 'Failed to create post. Please try again.';

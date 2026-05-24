@@ -24,8 +24,8 @@ getById(id: number): Observable<Post> {
   return this.http.get<Post>(`${this.baseApi}/${id}`);
 }
 
-createPost(post: Partial<Post>): Observable<Post> {
-  return this.http.post<Post>(this.baseApi, post);
+createPost(data: { title: string; content: string; subredditId: number; mediaUrl?: string | null }) {
+  return this.http.post<Post>(`${this.baseApi}`, data);
 }
 
 updatePost(id: Number, post: Partial<Post>): Observable<Post> {

@@ -20,6 +20,7 @@ export class EditPost implements OnInit {
   content = '';
   submitting = false;
   error = '';
+  mediaUrl = ''
 
   constructor(
     private route: ActivatedRoute,
@@ -50,6 +51,7 @@ export class EditPost implements OnInit {
             }
             this.title = post.title;
             this.content = post.content;
+            this.mediaUrl = post.mediaUrl ?? '';
           },
           error: () => this.router.navigate(['/'])
         });
@@ -68,7 +70,8 @@ export class EditPost implements OnInit {
 
     this.postService.updatePost(this.postId, {
       title: this.title,
-      content: this.content
+      content: this.content,
+      mediaUrl: this.mediaUrl || null 
     }).subscribe({
       next: (post) => {
         this.router.navigate(['/r', post.subredditName]);

@@ -72,4 +72,9 @@ public class PostController {
         User user = authService.getCurrentUser();
         return ResponseEntity.ok(postService.getPostsByUser(user));
     }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<PostResponse>> searchPosts(@RequestParam String q) {
+        return ResponseEntity.ok(postService.searchPosts(q));
+    }
 }

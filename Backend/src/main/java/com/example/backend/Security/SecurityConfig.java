@@ -46,6 +46,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/posts/**").permitAll()
                         .requestMatchers("/api/subreddits/**").permitAll()
                         .requestMatchers("/api/comments/**").permitAll()
+                        .requestMatchers("/api/search").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);

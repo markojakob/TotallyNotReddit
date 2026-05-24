@@ -1,9 +1,9 @@
 <div class="flex min-h-screen">
   <app-sidebar [subreddits]="subredditService.subreddits()"></app-sidebar>
 
-  <div class="flex flex-col flex-1 p-6 gap-6">
+  <div class="flex flex-col flex-1 p-6 gap-6 items-center">
 
-    <div class="bg-base-200 p-6 rounded-lg shadow flex items-center gap-4">
+    <div class="bg-base-200 p-6 rounded-lg shadow flex items-center gap-4 w-full max-w-2xl">
       <div class="avatar">
         <div class="w-16 rounded-full">
           <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" />
@@ -20,17 +20,17 @@
         <span class="loading loading-spinner loading-lg"></span>
       </div>
     } @else if (posts.length === 0) {
-      <div class="bg-base-100 p-6 rounded-lg shadow text-center text-gray-400">
+      <div class="bg-base-100 p-6 rounded-lg shadow text-center text-gray-400 w-full max-w-2xl">
         You haven't posted anything yet.
         <a routerLink="/create-post" class="text-primary ml-1">Create your first post</a>
       </div>
     } @else {
-  <div class="flex flex-col gap-4 max-w-2xl w-full">
-    @for (post of posts; track post.id) {
-      <app-post-card [post]="post"></app-post-card>
+      <div class="flex flex-col gap-4 max-w-2xl w-full">
+        @for (post of posts; track post.id) {
+          <app-post-card [post]="post"></app-post-card>
+        }
+      </div>
     }
-  </div>
-}
 
   </div>
 </div>

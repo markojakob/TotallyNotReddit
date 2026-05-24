@@ -9,7 +9,7 @@ import { PostCard } from '../../components/post-card/post-card';
 @Component({
   selector: 'app-main',
   templateUrl: './main.html',
-  imports: [CommonModule, Sidebar, PostCard],
+  imports: [CommonModule, PostCard],
   styleUrls: ['./main.css'],
 })
 export class Main implements OnInit {

@@ -75,4 +75,9 @@ public class SubredditController {
         subredditService.deleteSubreddit(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<SubredditResponse>> searchSubreddits(@RequestParam String q) {
+        return ResponseEntity.ok(subredditService.searchSubreddits(q));
+    }
 }
