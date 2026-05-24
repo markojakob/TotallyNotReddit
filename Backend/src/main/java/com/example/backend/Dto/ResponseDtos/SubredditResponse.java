@@ -11,11 +11,12 @@ public class SubredditResponse {
     private Long createdById;
     private String createdByUsername;
     private LocalDateTime createdAt;
+    private int membersCount;
 
     public SubredditResponse(Long id, String name, String description,
                              String rules, Boolean isPrivate,
                              Long createdById, String createdByUsername,
-                             LocalDateTime createdAt) {
+                             LocalDateTime createdAt, int membersCount) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -24,6 +25,7 @@ public class SubredditResponse {
         this.createdById = createdById;
         this.createdByUsername = createdByUsername;
         this.createdAt = createdAt;
+        this.membersCount = membersCount;
     }
 
     public Long getId() { return id; }
@@ -42,4 +44,7 @@ public class SubredditResponse {
     public void setCreatedByUsername(String createdByUsername) { this.createdByUsername = createdByUsername; }
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+
+    public int getMembersCount() { return membersCount; }
+    public void setMembersCount(int membersCount) { this.membersCount = membersCount; }
 }

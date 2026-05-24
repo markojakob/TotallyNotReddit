@@ -1,93 +1,123 @@
 <div class="flex min-h-screen">
-  <app-sidebar></app-sidebar>
 
-  <div class="flex flex-col flex-1 p-4 gap-6">
+  <div class="flex-1 flex justify-center p-4 gap-6">
 
-    <div class="bg-base-200 p-4 rounded-lg shadow">
-      <h2 class="text-xl font-bold">r/{{ subredditName }}</h2>
-    </div>
+    <!-- Main content -->
+    <div class="flex flex-col gap-6 w-full max-w-2xl">
 
-    <div class="bg-base-100 p-4 rounded-lg shadow">
-      <h1 class="text-2xl font-bold">{{ post?.title }}</h1>
-      <p class="mt-2 text-gray-200 whitespace-pre-wrap">{{ post?.content }}</p>
-      <p class="text-sm text-gray-400 mt-4">Posted by u/{{ post?.username || 'anonymous' }}</p>
-    </div>
-
-    <!-- Vote + comment count bar -->
-    <div class="flex items-center gap-3">
-      <div class="flex items-center gap-1 bg-base-300 rounded-full px-3 py-1">
-        <button class="btn btn-ghost btn-xs px-1" (click)="vote(1)" [ngClass]="{
-      'text-orange-500': currentUserVote() === 1,
-      'text-gray-400': currentUserVote() !== 1
-    }">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 4l8 8H4z" />
-          </svg>
-        </button>
-
-        <span class="text-sm font-bold min-w-6 text-center" [ngClass]="{
-      'text-orange-500': currentUserVote() === 1,
-      'text-blue-500': currentUserVote() === -1,
-      'text-gray-700': currentUserVote() === 0
-    }">
-          {{ post?.score }}
-        </span>
-
-        <button class="btn btn-ghost btn-xs px-1" (click)="vote(-1)" [ngClass]="{
-      'text-blue-500': currentUserVote() === -1,
-      'text-gray-400': currentUserVote() !== -1
-    }">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 20l-8-8h16z" />
-          </svg>
-        </button>
+      <div class="bg-base-200 p-4 rounded-lg shadow">
+        <h2 class="text-xl font-bold">r/{{ subredditName }}</h2>
       </div>
 
-      <div class="flex items-center gap-2 bg-base-300 rounded-full px-3 py-1">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M8 10h.01M12 10h.01M16 10h.01M21 16c0 1.1-.9 2-2 2H7l-4 4V6a2 2 0 012-2h14a2 2 0 012 2v10z" />
-        </svg>
-        <span class="text-sm font-bold">{{ comments.length }}</span>
-      </div>
-    </div>
-
-    <div class="bg-base-100 p-4 rounded-lg shadow flex flex-col gap-2">
-      <textarea class="textarea textarea-bordered w-full" [class.textarea-error]="commentError"
-        placeholder="Write a comment..." [(ngModel)]="newCommentContent" (ngModelChange)="commentError = ''" rows="3">
-  </textarea>
-      @if (commentError) {
-      <p class="text-error text-sm">{{ commentError }}</p>
-      }
-      <button class="btn btn-primary self-end" (click)="submitComment()">Comment</button>
-    </div>
-
-    <div class="bg-base-100 p-4 rounded-lg shadow">
-      <h3 class="font-semibold mb-4 text-lg">Comments ({{ comments.length }})</h3>
-      <div class="flex flex-col gap-4">
-        @for (comment of comments; track comment.id) {
-        <div class="border-l-2 border-gray-600 pl-4 py-1">
-          <div class="flex items-center justify-between text-xs text-gray-400">
-            <span class="font-bold text-gray-300">u/{{ comment.username }}</span>
-
-            @if (comment.username === currentUsername) {
-            <div class="dropdown dropdown-end">
-              <button tabindex="0" class="btn btn-ghost btn-xs text-gray-300">⋯</button>
-              <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box shadow z-10 w-32 p-1">
-                <li><a (click)="startEditComment(comment)">Edit</a></li>
-                <li><a (click)="confirmDeleteComment(comment)" class="text-error">Delete</a></li>
-              </ul>
-            </div>
-            }
-          </div>
-          <p class="text-sm mt-1 text-gray-200">{{ comment.content }}</p>
+      <div class="bg-base-100 p-4 rounded-lg shadow">
+        @if (post) {
+        <div class="text-xs text-gray-400 mb-2 flex items-center gap-2">
+          <span>r/{{ post.subredditName || post.subredditId }}</span>
+          <span>•</span>
+          <span>Posted by u/{{ post.username || 'anonymous' }}</span>
+          <span>•</span>
+          <span>{{ post.createdAt ? timeAgo(post.createdAt) : '' }}</span>
         </div>
-        } @empty {
-        <p class="text-gray-400 text-sm">No comments yet.</p>
+        <h1 class="text-2xl font-bold">{{ post.title }}</h1>
+        <p class="mt-2 text-gray-200 whitespace-pre-wrap">{{ post.content }}</p>
         }
       </div>
+
+      <!-- Vote + comment count bar -->
+      <div class="flex items-center gap-3">
+        <div class="flex items-center gap-1 bg-base-300 rounded-full px-3 py-1">
+          <button class="btn btn-ghost btn-xs px-1" (click)="vote(1)" [ngClass]="{
+            'text-orange-500': currentUserVote() === 1,
+            'text-gray-400': currentUserVote() !== 1
+          }">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 4l8 8H4z" />
+            </svg>
+          </button>
+          <span class="text-sm font-bold min-w-6 text-center" [ngClass]="{
+            'text-orange-500': currentUserVote() === 1,
+            'text-blue-500': currentUserVote() === -1,
+            'text-gray-700': currentUserVote() === 0
+          }">{{ post?.score }}</span>
+          <button class="btn btn-ghost btn-xs px-1" (click)="vote(-1)" [ngClass]="{
+            'text-blue-500': currentUserVote() === -1,
+            'text-gray-400': currentUserVote() !== -1
+          }">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 20l-8-8h16z" />
+            </svg>
+          </button>
+        </div>
+
+        <div class="flex items-center gap-2 bg-base-300 rounded-full px-3 py-1">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M8 10h.01M12 10h.01M16 10h.01M21 16c0 1.1-.9 2-2 2H7l-4 4V6a2 2 0 012-2h14a2 2 0 012 2v10z" />
+          </svg>
+          <span class="text-sm font-bold">{{ comments.length }}</span>
+        </div>
+      </div>
+
+      <!-- Comment box -->
+      <div class="bg-base-100 p-4 rounded-lg shadow flex flex-col gap-2">
+        <textarea class="textarea textarea-bordered w-full" [class.textarea-error]="commentError"
+          placeholder="Write a comment..." [(ngModel)]="newCommentContent" (ngModelChange)="commentError = ''" rows="3">
+        </textarea>
+        @if (commentError) {
+        <p class="text-error text-sm">{{ commentError }}</p>
+        }
+        <button class="btn btn-primary self-end" (click)="submitComment()">Comment</button>
+      </div>
+
+      <!-- Comments list -->
+      <div class="bg-base-100 p-4 rounded-lg shadow">
+        <h3 class="font-semibold mb-4 text-lg">Comments ({{ comments.length }})</h3>
+        <div class="flex flex-col gap-4">
+          @for (comment of comments; track comment.id) {
+          <div class="border-l-2 border-gray-600 pl-4 py-1">
+            <div class="flex items-center justify-between text-xs text-gray-400">
+              <span class="font-bold text-gray-300">u/{{ comment.username }}</span>
+              @if (comment.username === currentUsername) {
+              <div class="dropdown dropdown-end">
+                <button tabindex="0" class="btn btn-ghost btn-xs text-gray-300">⋯</button>
+                <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box shadow z-10 w-32 p-1">
+                  <li><a (click)="startEditComment(comment)">Edit</a></li>
+                  <li><a (click)="confirmDeleteComment(comment)" class="text-error">Delete</a></li>
+                </ul>
+              </div>
+              }
+            </div>
+            <p class="text-sm mt-1 text-gray-200">{{ comment.content }}</p>
+            <div class="flex items-center gap-1 mt-2">
+              <button class="btn btn-ghost btn-xs px-1" (click)="voteComment(comment, 1)" [ngClass]="{
+                  'text-orange-500': comment.currentUserVote === 1,
+                  'text-gray-400': comment.currentUserVote !== 1
+                }">▲</button>
+              <span class="text-xs font-bold min-w-4 text-center" [ngClass]="{
+                  'text-orange-500': comment.currentUserVote === 1,
+                  'text-blue-500': comment.currentUserVote === -1,
+                  'text-gray-400': comment.currentUserVote === 0
+                }">{{ comment.score }}</span>
+              <button class="btn btn-ghost btn-xs px-1" (click)="voteComment(comment, -1)" [ngClass]="{
+                  'text-blue-500': comment.currentUserVote === -1,
+                  'text-gray-400': comment.currentUserVote !== -1
+                }">▼</button>
+            </div>
+          </div>
+          } @empty {
+          <p class="text-gray-400 text-sm">No comments yet.</p>
+          }
+        </div>
+      </div>
+    </div>
+
+    <div class="w-80 hidden xl:flex flex-col gap-4">
+      @if (subreddit) {
+      <app-subreddit-sidebar [subreddit]="subreddit" />
+      }
     </div>
   </div>
+
   @if (commentToDelete) {
   <div class="modal modal-open">
     <div class="modal-box">

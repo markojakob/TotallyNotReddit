@@ -9,4 +9,5 @@ export interface Subreddit {
   isPrivate: boolean;
   createdAt: string;   
   postsCount?: number;         
+  membersCount?: number;
 }

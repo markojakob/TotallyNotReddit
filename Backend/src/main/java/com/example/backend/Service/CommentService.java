@@ -6,9 +6,11 @@ import com.example.backend.Exception.ForbiddenException;
 import com.example.backend.Exception.NotFoundException;
 import com.example.backend.Mapper.CommentMapper;
 import com.example.backend.Model.Comment;
+import com.example.backend.Model.CommentVote;
 import com.example.backend.Model.Post;
 import com.example.backend.Model.User;
 import com.example.backend.Repository.CommentRepository;
+import com.example.backend.Repository.CommentVoteRepository;
 import com.example.backend.Repository.PostRepository;
 import org.springframework.stereotype.Service;
 
@@ -18,10 +20,28 @@ import java.util.List;
 public class CommentService {
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
+    private final CommentVoteRepository commentVoteRepository;
+    private final AuthService authService;
 
-    public CommentService(CommentRepository commentRepository, PostRepository postRepository) {
+    public CommentService(CommentRepository commentRepository,
+                          PostRepository postRepository,
+                          CommentVoteRepository commentVoteRepository,
+                          AuthService authService) {
         this.commentRepository = commentRepository;
         this.postRepository = postRepository;
+        this.commentVoteRepository = commentVoteRepository;
+        this.authService = authService;
+    }
+
+    private int getCurrentUserVote(Comment comment) {
+        try {
+            User currentUser = authService.getCurrentUser();
+            return commentVoteRepository.findByUserAndComment(currentUser, comment)
+                    .map(CommentVote::getVoteValue)
+                    .orElse(0);
+        } catch (Exception e) {
+            return 0;
+        }
     }
 
     public List<CommentResponse> getCommentsByPostId(Long postId) {
@@ -30,7 +50,7 @@ public class CommentService {
 
         return commentRepository.findAllByPost(post)
                 .stream()
-                .map(CommentMapper::toResponse)
+                .map(comment -> CommentMapper.toResponse(comment, getCurrentUserVote(comment)))
                 .toList();
     }
 
@@ -41,7 +61,7 @@ public class CommentService {
         Comment comment = CommentMapper.fromRequest(request, author, post);
         commentRepository.save(comment);
 
-        return CommentMapper.toResponse(comment);
+        return CommentMapper.toResponse(comment, 0);
     }
 
     public CommentResponse updateComment(Long id, CreateCommentRequest request, User currentUser) {
@@ -55,7 +75,7 @@ public class CommentService {
         comment.setContent(request.getContent());
         commentRepository.save(comment);
 
-        return CommentMapper.toResponse(comment);
+        return CommentMapper.toResponse(comment, getCurrentUserVote(comment));
     }
 
     public void deleteComment(Long id, User currentUser) {

@@ -25,12 +25,12 @@
         <a routerLink="/create-post" class="text-primary ml-1">Create your first post</a>
       </div>
     } @else {
-      <div class="flex flex-wrap gap-4">
-        @for (post of posts; track post.id) {
-          <app-post-card [post]="post"></app-post-card>
-        }
-      </div>
+  <div class="flex flex-col gap-4 max-w-2xl w-full">
+    @for (post of posts; track post.id) {
+      <app-post-card [post]="post"></app-post-card>
     }
+  </div>
+}
 
   </div>
 </div>

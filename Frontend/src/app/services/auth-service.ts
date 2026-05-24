@@ -28,20 +28,15 @@ export class AuthService {
   }
 
   login(dto: loginDto): Observable<any> {
-    return this.http.post<any>(`${this.baseApi}/login`, dto).pipe(
-      tap({
-        next: (res) => {
-          console.log('login response:', res);
-          localStorage.setItem('token', res.token);
-          localStorage.setItem('username', res.username);
-          this.isAuthenticated.set(true);
-        },
-        error: (err) => {
-          this.logout();
-        }
-      })
-    );
-  }
+  return this.http.post<any>(`${this.baseApi}/login`, dto).pipe(
+    tap((res) => {
+      localStorage.setItem('token', res.token);
+      localStorage.setItem('username', res.username);
+
+      this.isAuthenticated.set(true);
+    })
+  );
+}
 
   logout() {
     localStorage.removeItem('token');

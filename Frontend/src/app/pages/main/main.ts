@@ -5,7 +5,6 @@ import { Post } from '../../models/post';
 import { CommonModule } from '@angular/common';
 import { Sidebar } from '../../components/sidebar/sidebar';
 import { PostCard } from '../../components/post-card/post-card';
-import { LoginPromptService } from '../../services/login-prompt-service';
 
 @Component({
   selector: 'app-main',
@@ -19,8 +18,7 @@ export class Main implements OnInit {
 
   constructor(
     private postService: PostService,
-    private subredditService: SubredditService,
-    private loginPromptService: LoginPromptService
+    private subredditService: SubredditService
   ) {}
 
   ngOnInit(): void {

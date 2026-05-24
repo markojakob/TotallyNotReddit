@@ -7,7 +7,7 @@ import com.example.backend.Model.Post;
 import com.example.backend.Model.User;
 import com.example.backend.Model.PostVote;
 import com.example.backend.Repository.PostRepository;
-import com.example.backend.Repository.VoteRepository;
+import com.example.backend.Repository.PostVoteRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -16,11 +16,11 @@ import java.util.Optional;
 @Service
 public class VoteService {
 
-    private final VoteRepository voteRepository;
+    private final PostVoteRepository postVoteRepository;
     private final PostRepository postRepository;
 
-    public VoteService(VoteRepository voteRepository, PostRepository postRepository) {
-        this.voteRepository = voteRepository;
+    public VoteService(PostVoteRepository postVoteRepository, PostRepository postRepository) {
+        this.postVoteRepository = postVoteRepository;
         this.postRepository = postRepository;
     }
 
@@ -29,7 +29,7 @@ public class VoteService {
         Post post = postRepository.findById(request.getPostId())
                 .orElseThrow(() -> new NotFoundException("Post not found"));
 
-        Optional<PostVote> existingVote = voteRepository.findByUserAndPost(user, post);
+        Optional<PostVote> existingVote = postVoteRepository.findByUserAndPost(user, post);
         int voteValue = request.getVoteValue();
         int returnedVoteValue;
 
@@ -37,11 +37,11 @@ public class VoteService {
             PostVote oldPostVote = existingVote.get();
 
             if (voteValue == 0 || oldPostVote.getVoteValue() == voteValue) {
-                voteRepository.delete(oldPostVote);
+                postVoteRepository.delete(oldPostVote);
                 returnedVoteValue = 0;
             } else {
                 oldPostVote.setVoteValue(voteValue);
-                voteRepository.save(oldPostVote);
+                postVoteRepository.save(oldPostVote);
                 returnedVoteValue = voteValue;
             }
         } else {
@@ -50,14 +50,14 @@ public class VoteService {
                 postVote.setPost(post);
                 postVote.setUser(user);
                 postVote.setVoteValue(voteValue);
-                voteRepository.save(postVote);
+                postVoteRepository.save(postVote);
                 returnedVoteValue = voteValue;
             } else {
                 returnedVoteValue = 0;
             }
         }
 
-        int newScore = voteRepository.sumVotesByPost(post);
+        int newScore = postVoteRepository.sumVotesByPost(post);
         post.setScore(newScore);
         postRepository.save(post);
 

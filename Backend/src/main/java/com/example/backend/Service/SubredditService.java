@@ -9,6 +9,7 @@ import com.example.backend.Model.Subreddit;
 import com.example.backend.Model.User;
 import com.example.backend.Repository.SubredditRepository;
 import com.example.backend.Repository.UserRepository;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,6 +30,7 @@ public class SubredditService {
         return SubredditMapper.toResponse(subreddit);
     }
 
+    @Transactional(readOnly = true)
     public List<SubredditResponse> getAllSubreddits() {
         return subredditRepository.findAll()
                 .stream()
@@ -36,14 +38,14 @@ public class SubredditService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
     public SubredditResponse getByName(String name) {
-
         Subreddit subreddit = subredditRepository.findByName(name)
                 .orElseThrow(() -> new NotFoundException("Subreddit not found"));
-
         return SubredditMapper.toResponse(subreddit);
     }
 
+    @Transactional(readOnly = true)
     public SubredditResponse getSubredditById(Long id) {
         Subreddit subreddit = subredditRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Subreddit not found"));

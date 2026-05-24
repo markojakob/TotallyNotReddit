@@ -1,7 +1,6 @@
 import { Component, OnInit, ChangeDetectorRef, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PostService } from '../../services/PostService';
-import { CommentService, CommentResponse } from '../../services/comment-service';
 import { Post } from '../../models/post';
 import { Sidebar } from "../../components/sidebar/sidebar";
 import { CommonModule } from '@angular/common';
@@ -10,11 +9,17 @@ import { AuthService } from '../../services/auth-service';
 import { LoginPromptService } from '../../services/login-prompt-service';
 import { VoteService } from '../../services/vote-service';
 import { FormsModule } from '@angular/forms';
+import { CommentResponse } from '../../models/comment-response';
+import { CommentService } from '../../services/comment-service';
+import { formatDate, timeAgo } from '../../utils/time.utils';
+import { Subreddit } from '../../models/subreddit';
+import { SubredditService } from '../../services/subreddit-service';
+import { SubredditSidebar } from '../../components/subreddit-sidebar/subreddit-sidebar';
 
 @Component({
   selector: 'app-comments-page',
   standalone: true,
-  imports: [Sidebar, CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, SubredditSidebar],
   templateUrl: './comments-page.html',
   styleUrl: './comments-page.css',
 })
@@ -28,6 +33,10 @@ export class CommentsPage implements OnInit {
   currentUsername = localStorage.getItem('username') ?? '';
   commentToDelete: CommentResponse | null = null;
   commentError = '';
+  commentVotes = new Map<number, number>();
+  timeAgo = timeAgo;
+  subreddit: Subreddit | null = null;
+  formatDate = formatDate;
 
   constructor(
     private route: ActivatedRoute,
@@ -37,7 +46,8 @@ export class CommentsPage implements OnInit {
     private authService: AuthService,
     private loginPromptService: LoginPromptService,
     private voteService: VoteService,
-    private router: Router
+    private router: Router,
+    private subredditService: SubredditService,
   ) { }
 
   ngOnInit() {
@@ -50,12 +60,14 @@ export class CommentsPage implements OnInit {
 
         forkJoin({
           post: this.postService.getById(this.postId),
-          comments: this.commentService.getByPostId(this.postId)
+          comments: this.commentService.getByPostId(this.postId),
+          subreddit: this.subredditService.getByName(this.subredditName)
         }).subscribe({
-          next: ({ post, comments }) => {
+          next: ({ post, comments, subreddit }) => {
             this.post = post;
             this.comments = comments;
-            this.currentUserVote.set((post as any).currentUserVote ?? 0); // ← add this
+            this.subreddit = subreddit;
+            this.currentUserVote.set((post as any).currentUserVote ?? 0);
             this.cdr.detectChanges();
           },
           error: (err) => console.error('forkJoin failed:', err)
@@ -66,7 +78,7 @@ export class CommentsPage implements OnInit {
 
   vote(clickedValue: number) {
     if (!this.post) return;
-    const result$ = this.voteService.handleVote(this.post.id, this.currentUserVote(), clickedValue);
+    const result$ = this.voteService.handlePostVote(this.post.id, this.currentUserVote(), clickedValue);
     if (!result$) return;
 
     result$.subscribe({
@@ -79,55 +91,70 @@ export class CommentsPage implements OnInit {
     });
   }
 
-submitComment() {
-  if (!this.authService.isAuthenticated()) {
-    this.loginPromptService.show();
-    return;
-  }
-  if (!this.newCommentContent.trim()) {
-    this.commentError = 'Comment cannot be empty.';
-    return;
-  }
-
-  this.commentError = '';
-  this.commentService.createComment({
-    postId: this.postId,
-    content: this.newCommentContent
-  }).subscribe({
-    next: (comment) => {
-      this.comments.push(comment);
-      this.newCommentContent = '';
-      this.commentError = '';
-      this.cdr.detectChanges();
-    },
-    error: (err) => {
-      this.commentError = 'Failed to post comment. Please try again.';
-      console.error('Failed to post comment:', err);
+  submitComment() {
+    if (!this.authService.isAuthenticated()) {
+      this.loginPromptService.show();
+      return;
     }
-  });
-}
+    if (!this.newCommentContent.trim()) {
+      this.commentError = 'Comment cannot be empty.';
+      return;
+    }
+
+    this.commentError = '';
+    this.commentService.createComment({
+      postId: this.postId,
+      content: this.newCommentContent
+    }).subscribe({
+      next: (comment) => {
+        this.comments.push(comment);
+        this.newCommentContent = '';
+        this.commentError = '';
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        this.commentError = 'Failed to post comment. Please try again.';
+        console.error('Failed to post comment:', err);
+      }
+    });
+  }
 
   startEditComment(comment: CommentResponse) {
-  this.router.navigate(['/comments', comment.id, 'edit']);
-}
+    this.router.navigate(['/comments', comment.id, 'edit']);
+  }
 
-confirmDeleteComment(comment: CommentResponse) {
-  this.commentToDelete = comment;
-}
+  confirmDeleteComment(comment: CommentResponse) {
+    this.commentToDelete = comment;
+  }
 
-cancelDeleteComment() {
-  this.commentToDelete = null;
-}
+  cancelDeleteComment() {
+    this.commentToDelete = null;
+  }
 
-deleteComment() {
-  if (!this.commentToDelete) return;
-  this.commentService.deleteComment(this.commentToDelete.id).subscribe({
-    next: () => {
-      this.comments = this.comments.filter(c => c.id !== this.commentToDelete!.id);
-      this.commentToDelete = null;
-      this.cdr.detectChanges();
-    },
-    error: (err) => console.error('Delete comment failed:', err)
-  });
-}
+  deleteComment() {
+    if (!this.commentToDelete) return;
+    this.commentService.deleteComment(this.commentToDelete.id).subscribe({
+      next: () => {
+        this.comments = this.comments.filter(c => c.id !== this.commentToDelete!.id);
+        this.commentToDelete = null;
+        this.cdr.detectChanges();
+      },
+      error: (err) => console.error('Delete comment failed:', err)
+    });
+  }
+
+  voteComment(comment: CommentResponse, clickedValue: number): void {
+    const currentVote = comment.currentUserVote ?? 0;
+    const result$ = this.voteService.handleCommentVote(comment.id, currentVote, clickedValue);
+    if (!result$) return;
+
+    result$.subscribe({
+      next: (result) => {
+        comment.score = result.newPostScore;
+        comment.currentUserVote = result.voteValue;
+        this.cdr.detectChanges();
+      },
+      error: (err) => console.error('Comment vote error:', err)
+    });
+  }
 }

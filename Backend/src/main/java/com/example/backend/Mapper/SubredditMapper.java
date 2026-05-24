@@ -26,7 +26,8 @@ public class SubredditMapper {
                 subreddit.getPrivate(),
                 subreddit.getCreatedBy() != null ? subreddit.getCreatedBy().getId() : null,
                 subreddit.getCreatedBy() != null ? subreddit.getCreatedBy().getUsername() : null,
-                subreddit.getCreatedAt()
+                subreddit.getCreatedAt(),
+                subreddit.getPosts().size()
         );
     }
 }

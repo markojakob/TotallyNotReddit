@@ -1,51 +1,54 @@
-<div class="flex flex-col min-h-screen">
+<div class="flex flex-col">
 
-    <div class="bg-base-200 border-b">
-        <div class="max-w-5xl mx-auto p-6">
-            <h1 class="text-3xl font-bold">r/{{ subredditName }}</h1>
-        </div>
+  <div class="bg-base-200 border-b">
+    <div class="max-w-5xl mx-auto p-6">
+      <h1 class="text-3xl font-bold">r/{{ subredditName }}</h1>
+
+      <!-- Subreddit info shown below title on small screens -->
+      <div class="xl:hidden mt-4">
+  @if (subreddit()) {
+    <p class="text-sm text-gray-400">{{ subreddit()!.description }}</p>
+
+    <div class="flex items-center gap-4 mt-2 text-xs text-gray-500">
+      <span>{{ subreddit()!.isPrivate ? 'Private' : 'Public' }}</span>
+      <span>{{ subreddit()!.membersCount ?? 0 }} Members</span>
+      <span>{{ subreddit()!.createdAt ? formatDate(subreddit()!.createdAt) : '' }}</span>
     </div>
 
-    <div class="flex flex-1">
+    @if (subreddit()!.rules) {
+      <div class="mt-3">
+        <h4 class="text-sm font-semibold text-gray-300 mb-1">Rules</h4>
+        <p class="text-xs text-gray-500 whitespace-pre-wrap">{{ subreddit()!.rules }}</p>
+      </div>
+    }
+  }
+</div>
+    </div>
+  </div>
 
-        <app-sidebar [subreddits]="subreddits"></app-sidebar>
+  <div class="flex justify-center gap-6 p-4">
 
-        <div class="flex-1 flex justify-center p-4">
-            <div class="flex flex-col gap-4 max-w-2xl w-full">
-
-                @if (loading()) {
-                <div>Loading posts...</div>
-                } @else if (posts().length === 0) {
-                <div>No posts yet.</div>
-                } @else {
-                @for (post of posts(); track post.id) {
-                <app-post-card [post]="post"></app-post-card>
-                }
-                }
-
-            </div>
-        </div>
-
-        <div class="w-80 p-4 hidden xl:block">
-            <div class="bg-base-100 shadow rounded-lg p-4 mb-4">
-                <h2 class="font-bold mb-2">About Community</h2>
-                <p class="text-sm text-gray-400">
-                    {{ subreddit()?.description }}
-                </p>
-            </div>
-
-            <!-- RULES CARD -->
-            <div class="bg-base-100 shadow rounded-lg p-4">
-                <h2 class="font-bold mb-2">Rules</h2>
-
-                <ul class="text-sm text-gray-400 flex flex-col gap-2">
-                    {{ subreddit()?.rules}}
-                </ul>
-
-            </div>
-
-        </div>
-
+    <!-- Posts -->
+    <div class="flex flex-col gap-4 w-full max-w-2xl">
+      @if (loading()) {
+        <div>Loading posts...</div>
+      } @else if (posts().length === 0) {
+        <div>No posts yet.</div>
+      } @else {
+        @for (post of posts(); track post.id) {
+          <app-post-card [post]="post"></app-post-card>
+        }
+      }
     </div>
 
+    <!-- Right sidebar — hidden below xl -->
+    <div class="w-80 hidden xl:block flex-shrink-0">
+      @if (subreddit()) {
+        <app-subreddit-sidebar
+          [subreddit]="subreddit()!"
+          title="About Community" />
+      }
+    </div>
+
+  </div>
 </div>

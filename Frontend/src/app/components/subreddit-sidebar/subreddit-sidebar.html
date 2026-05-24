@@ -1,0 +1,31 @@
+<div class="flex flex-col gap-4">
+  <div class="bg-base-100 shadow rounded-lg p-4">
+    <h2 class="font-bold mb-3">{{ title || 'About r/' + subreddit.name }}</h2>
+    <p class="text-sm text-gray-400 mb-4">{{ subreddit.description || 'No description.' }}</p>
+
+    <div class="flex flex-col gap-2 text-sm text-gray-400 mb-4">
+      <div class="flex items-center gap-2">
+        <span>🗓</span>
+        <span>Created {{ subreddit.createdAt ? formatDate(subreddit.createdAt) : '' }}</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <span>🌐</span>
+        <span>{{ subreddit.isPrivate ? 'Private' : 'Public' }}</span>
+      </div>
+    </div>
+
+    <div class="border-t border-gray-700 pt-3">
+      <div class="text-sm">
+        <span class="font-bold text-white">{{ subreddit.membersCount ?? 0 }}</span>
+        <span class="text-gray-400 ml-1">Members</span>
+      </div>
+    </div>
+  </div>
+
+  @if (subreddit.rules) {
+    <div class="bg-base-100 shadow rounded-lg p-4">
+      <h2 class="font-bold mb-2">Rules</h2>
+      <p class="text-sm text-gray-400 whitespace-pre-wrap">{{ subreddit.rules }}</p>
+    </div>
+  }
+</div>

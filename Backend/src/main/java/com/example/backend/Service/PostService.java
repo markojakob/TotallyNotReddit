@@ -10,7 +10,7 @@ import com.example.backend.Model.Subreddit;
 import com.example.backend.Model.User;
 import com.example.backend.Repository.PostRepository;
 import com.example.backend.Repository.SubredditRepository;
-import com.example.backend.Repository.VoteRepository;
+import com.example.backend.Repository.PostVoteRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,23 +20,23 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final SubredditRepository subredditRepository;
-    private final VoteRepository voteRepository;
+    private final PostVoteRepository postVoteRepository;
     private final AuthService authService;
 
     public PostService(PostRepository postRepository,
                        SubredditRepository subredditRepository,
-                       VoteRepository voteRepository,
+                       PostVoteRepository postVoteRepository,
                        AuthService authService) {
         this.postRepository = postRepository;
         this.subredditRepository = subredditRepository;
-        this.voteRepository = voteRepository;
+        this.postVoteRepository = postVoteRepository;
         this.authService = authService;
     }
 
     private Integer getCurrentUserVote(Post post) {
         try {
             User currentUser = authService.getCurrentUser();
-            return voteRepository.findByUserAndPost(currentUser, post)
+            return postVoteRepository.findByUserAndPost(currentUser, post)
                     .map(vote -> vote.getVoteValue())
                     .orElse(0);
         } catch (Exception e) {

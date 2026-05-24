@@ -1,20 +1,52 @@
-<div class="hidden lg:flex flex-col w-80 border-r border-gray-200 min-h-screen p-4 gap-4">
-    <a routerLink="/"><button class="btn flex items-center gap-2">
-        <img src="/home-line.svg" class="w-5 h-5" />
-        Home
-    </button></a>
+<div class="fixed left-0 top-16 h-[calc(100vh-4rem)] flex flex-col border-r border-gray-700 transition-all duration-300 overflow-y-auto overflow-x-hidden z-50"
+     [class.w-64]="!collapsed"
+     [class.w-14]="collapsed">
 
-    <a routerLink="/create-post"><button class="btn btn-primary w-full">Create Post</button></a>
-    <a routerLink="/create-subreddit"><button class="btn btn-outline w-full">Create Community</button></a>
+  <button class="btn btn-ghost btn-sm m-2 self-end"
+          (click)="toggle()"
+          [title]="collapsed ? 'Expand sidebar' : 'Collapse sidebar'">
+    {{ collapsed ? '→' : '←' }}
+  </button>
 
-    <div class="bg-base-100 shadow-md rounded-lg p-4 flex flex-col gap-4">
+  <div class="flex flex-col gap-3 px-2">
+    <a routerLink="/">
+      <button class="btn btn-ghost w-full flex items-center gap-2"
+              [class.justify-center]="collapsed"
+              [class.justify-start]="!collapsed">
+        🏠
+        @if (!collapsed) { <span>Home</span> }
+      </button>
+    </a>
+
+    <a routerLink="/create-post">
+      <button class="btn btn-primary w-full flex items-center gap-2"
+              [class.justify-center]="collapsed"
+              [class.justify-start]="!collapsed">
+        ✏️
+        @if (!collapsed) { <span>Create Post</span> }
+      </button>
+    </a>
+
+    <a routerLink="/create-subreddit">
+      <button class="btn btn-outline w-full flex items-center gap-2"
+              [class.justify-center]="collapsed"
+              [class.justify-start]="!collapsed">
+        🌐
+        @if (!collapsed) { <span>Create Subreddit</span> }
+      </button>
+    </a>
+
+    @if (!collapsed) {
+      <div class="bg-base-100 shadow-md rounded-lg p-4 flex flex-col gap-4 mt-2">
         <h2 class="text-lg font-semibold text-gray-500">TRENDING</h2>
         <ul class="flex flex-col gap-2 text-gray-200">
-            @for (subreddit of subreddits; track $index) {
+          @for (subreddit of subreddits; track $index) {
             <li>
-                <a routerLink="/r/{{ subreddit.name }}">r/{{ subreddit.name }}</a>
+              <a routerLink="/r/{{ subreddit.name }}">r/{{ subreddit.name }}</a>
             </li>
-            }
+          }
         </ul>
-    </div>
+      </div>
+    }
+  </div>
 </div>

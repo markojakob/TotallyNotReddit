@@ -36,4 +36,15 @@ public class CommentVote {
             createdAt = Instant.now();
         }
     }
+
+    public User getUser() { return user; }
+    public void setUser(User user) { this.user = user; }
+
+    public Comment getComment() { return comment; }
+    public void setComment(Comment comment) { this.comment = comment; }
+
+    public int getVoteValue() { return voteValue; }
+    public void setVoteValue(int voteValue) { this.voteValue = voteValue; }
+
+    public Long getId() { return id; }
 }

@@ -9,6 +9,7 @@ public class CommentResponse {
     private Long postId;
     private LocalDateTime createdAt;
     private Integer score;
+    private int currentUserVote;
 
     // Getters and Setters
     public Long getId() { return id; }
@@ -28,4 +29,6 @@ public class CommentResponse {
 
     public Integer getScore() { return score; }
     public void setScore(Integer score) { this.score = score; }
+    public int getCurrentUserVote() { return currentUserVote; }
+    public void setCurrentUserVote(int currentUserVote) { this.currentUserVote = currentUserVote; }
 }

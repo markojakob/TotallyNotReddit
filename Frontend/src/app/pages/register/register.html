@@ -1,5 +1,5 @@
-<div class="form-container flex flex-col justify-center items-center min-h-screen">
-  <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="flex flex-col mt-4 gap-2 w-80">
+<div class="min-h-screen flex justify-center py-12">
+  <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-2 w-80 h-fit">
 
     @if (successMessage) {
       <div class="alert alert-success">{{ successMessage }}</div>
@@ -9,8 +9,7 @@
 
     <fieldset class="fieldset">
       <legend class="fieldset-legend">Username</legend>
-      <input type="text"
-        class="input input-sm w-full"
+      <input type="text" class="input input-sm w-full"
         [class.input-error]="registerForm.get('username')?.invalid && registerForm.get('username')?.touched"
         formControlName="username" />
       @if (registerForm.get('username')?.invalid && registerForm.get('username')?.touched) {
@@ -20,8 +19,7 @@
 
     <fieldset class="fieldset">
       <legend class="fieldset-legend">Email</legend>
-      <input type="email"
-        class="input input-sm w-full"
+      <input type="email" class="input input-sm w-full"
         [class.input-error]="registerForm.get('email')?.invalid && registerForm.get('email')?.touched"
         placeholder="example@gmail.com"
         formControlName="email" />
@@ -35,8 +33,7 @@
 
     <fieldset class="fieldset">
       <legend class="fieldset-legend">Password</legend>
-      <input type="password"
-        class="input input-sm w-full"
+      <input type="password" class="input input-sm w-full"
         [class.input-error]="registerForm.get('password')?.invalid && registerForm.get('password')?.touched"
         formControlName="password" />
       @if (registerForm.get('password')?.hasError('required') && registerForm.get('password')?.touched) {
@@ -52,6 +49,5 @@
     @if (errorMessage) {
       <p class="text-error text-sm text-center mt-1">{{ errorMessage }}</p>
     }
-
   </form>
 </div>

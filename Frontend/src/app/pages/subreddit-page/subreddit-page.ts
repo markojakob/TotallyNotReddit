@@ -5,10 +5,12 @@ import { SubredditService } from '../../services/subreddit-service';
 import { Post } from '../../models/post';
 import { PostCard } from '../../components/post-card/post-card';
 import { Subreddit } from '../../models/subreddit';
+import { SubredditSidebar } from '../../components/subreddit-sidebar/subreddit-sidebar';
+import { formatDate } from '../../utils/time.utils';
 
 @Component({
   selector: 'app-subreddit',
-  imports: [Sidebar, PostCard],
+  imports: [PostCard, SubredditSidebar],
   templateUrl: './subreddit-page.html',
   styleUrl: './subreddit-page.css',
 })
@@ -18,6 +20,7 @@ export class SubredditPage implements OnInit {
   subreddit = signal<Subreddit | null>(null);
   subredditName!: string;
   constructor(private route: ActivatedRoute, private subredditService: SubredditService) { }
+  formatDate = formatDate
 
   ngOnInit() {
   this.route.paramMap.subscribe(params => {
