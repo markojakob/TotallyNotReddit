@@ -19,7 +19,7 @@ export class PostCard implements OnInit {
   @Input({ required: true }) post!: Post;
   currentUserVote = signal<number>(0);
   showDeleteConfirm = false;
-
+  
   constructor(
     private voteService: VoteService,
     private postService: PostService,
@@ -63,15 +63,22 @@ export class PostCard implements OnInit {
     this.router.navigate(['/posts', this.post.id, 'edit']);
   }
 
-  confirmDelete(): void { this.showDeleteConfirm = true; }
-  cancelDelete(): void { this.showDeleteConfirm = false; }
+confirmDelete(): void {
+  (document.activeElement as HTMLElement)?.blur();
+  this.showDeleteConfirm = true;
+}
 
-  deletePost(): void {
-    this.postService.deletePost(this.post.id).subscribe({
-      next: () => { this.post = null as any; },
-      error: (err) => console.error('Delete failed:', err)
-    });
-  }
+cancelDelete(): void { this.showDeleteConfirm = false; }
+
+deletePost(): void {
+  this.postService.deletePost(this.post.id).subscribe({
+    next: () => {
+      this.showDeleteConfirm = false;
+      window.location.reload();
+    },
+    error: (err) => console.error('Delete failed:', err)
+  });
+}
 
   slugify(title: string): string {
     return title ? title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') : '';

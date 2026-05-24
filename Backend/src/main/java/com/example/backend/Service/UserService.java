@@ -3,6 +3,7 @@ package com.example.backend.Service;
 import com.example.backend.Dto.RequestDtos.CreateUserRequest;
 import com.example.backend.Dto.ResponseDtos.UserResponse;
 import com.example.backend.Exception.BadRequestException;
+import com.example.backend.Exception.DuplicateResourceException;
 import com.example.backend.Exception.NotFoundException;
 import com.example.backend.Mapper.UserMapper;
 import com.example.backend.Model.User;
@@ -79,10 +80,10 @@ public class UserService {
 
     public void validateUserDoesNotExist(String username, String email) {
         if (userRepository.existsByUsername(username)) {
-            throw new RuntimeException("Username already exist");
+            throw new DuplicateResourceException("Username is already taken.");
         }
         if (userRepository.existsByEmail(email)) {
-            throw new RuntimeException("An user with this email already exist");
+            throw new DuplicateResourceException("An account with this email already exists.");
         }
     }
 

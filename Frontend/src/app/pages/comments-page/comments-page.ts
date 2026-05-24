@@ -27,6 +27,7 @@ export class CommentsPage implements OnInit {
   currentUserVote = signal<number>(0);
   currentUsername = localStorage.getItem('username') ?? '';
   commentToDelete: CommentResponse | null = null;
+  commentError = '';
 
   constructor(
     private route: ActivatedRoute,
@@ -78,25 +79,33 @@ export class CommentsPage implements OnInit {
     });
   }
 
-  submitComment() {
-    if (!this.authService.isAuthenticated()) {
-      this.loginPromptService.show();
-      return;
-    }
-    if (!this.newCommentContent.trim()) return;
-
-    this.commentService.createComment({
-      postId: this.postId,
-      content: this.newCommentContent
-    }).subscribe({
-      next: (comment) => {
-        this.comments.push(comment);
-        this.cdr.detectChanges();
-        this.newCommentContent = '';
-      },
-      error: (err) => console.error('Failed to post comment:', err)
-    });
+submitComment() {
+  if (!this.authService.isAuthenticated()) {
+    this.loginPromptService.show();
+    return;
   }
+  if (!this.newCommentContent.trim()) {
+    this.commentError = 'Comment cannot be empty.';
+    return;
+  }
+
+  this.commentError = '';
+  this.commentService.createComment({
+    postId: this.postId,
+    content: this.newCommentContent
+  }).subscribe({
+    next: (comment) => {
+      this.comments.push(comment);
+      this.newCommentContent = '';
+      this.commentError = '';
+      this.cdr.detectChanges();
+    },
+    error: (err) => {
+      this.commentError = 'Failed to post comment. Please try again.';
+      console.error('Failed to post comment:', err);
+    }
+  });
+}
 
   startEditComment(comment: CommentResponse) {
   this.router.navigate(['/comments', comment.id, 'edit']);

@@ -1,40 +1,44 @@
 <div class="form-container flex flex-col justify-center items-center min-h-screen">
   @if (successMessage) {
-  <div class="alert-success">
-    {{ successMessage }}
-  </div>
+    <div class="alert alert-success">{{ successMessage }}</div>
   }
-  
-  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="flex flex-col mt-4 gap-2 w-80">
 
+  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="flex flex-col mt-4 gap-2 w-80">
     <h1 class="text-xl font-bold text-center">Login</h1>
 
     <fieldset class="fieldset">
       <legend class="fieldset-legend">Username</legend>
-      <input type="text" class="input input-sm" formControlName="username" />
+      <input type="text"
+        class="input input-sm w-full"
+        [class.input-error]="loginForm.get('username')?.invalid && loginForm.get('username')?.touched"
+        formControlName="username" />
+      @if (loginForm.get('username')?.invalid && loginForm.get('username')?.touched) {
+        <p class="text-error text-xs mt-1">Username is required.</p>
+      }
     </fieldset>
 
     <fieldset class="fieldset">
       <legend class="fieldset-legend">Password</legend>
-      <input type="password" class="input input-sm" formControlName="password" />
+      <input type="password"
+        class="input input-sm w-full"
+        [class.input-error]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
+        formControlName="password" />
+      @if (loginForm.get('password')?.invalid && loginForm.get('password')?.touched) {
+        <p class="text-error text-xs mt-1">Password is required.</p>
+      }
     </fieldset>
 
-    <button class="btn btn-primary btn-sm">
-      Login
-    </button>
+    <button class="btn btn-primary btn-sm">Login</button>
 
-    <!-- Navigation text link to Registration -->
     <p class="text-xs text-center text-gray-500 mt-2">
-      Don't have an account? 
+      Don't have an account?
       <a routerLink="/register" class="text-primary hover:underline font-semibold cursor-pointer">
         Register here
       </a>
     </p>
 
     @if (errorMessage) {
-    <p class="text-red-500 text-sm text-center mt-1">
-      {{ errorMessage }}
-    </p>
+      <p class="text-error text-sm text-center mt-1">{{ errorMessage }}</p>
     }
   </form>
 </div>

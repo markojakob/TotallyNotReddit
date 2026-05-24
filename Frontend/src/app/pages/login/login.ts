@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../services/auth-service';
 import { Router, RouterLink } from '@angular/router';
@@ -10,14 +10,15 @@ import { Router, RouterLink } from '@angular/router';
   styleUrl: './login.css',
 })
 export class Login {
-  successMessage: string | null = null; // Cleaned up 'String' to lowercase primitive 'string'
+  successMessage: string | null = null;
   loginForm: FormGroup;
   errorMessage: string | null = null;
 
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef 
   ) {
     this.loginForm = this.fb.group({
       username: ['', Validators.required],
@@ -26,23 +27,23 @@ export class Login {
   }
 
   onSubmit() {
-    this.errorMessage = null; 
+    this.errorMessage = null;
     this.successMessage = null;
+
+    if (this.loginForm.invalid) {
+      this.loginForm.markAllAsTouched();
+      return;
+    }
 
     this.authService.login(this.loginForm.value).subscribe({
       next: (res: any) => {
-        setTimeout(() => {
-          this.successMessage = `Welcome ${res.username}!`;
-        }, 0);
-        setTimeout(() => {
-          this.router.navigate(['/']);
-        }, 1500);
+        this.successMessage = `Welcome ${res.username}!`;
+        this.cdr.detectChanges(); 
+        setTimeout(() => this.router.navigate(['/']), 1500);
       },
       error: (err) => {
-        console.error(err);
-        setTimeout(() => {
-          this.errorMessage = 'Invalid credentials';
-        }, 0);
+        this.errorMessage = err.error?.message || 'Invalid credentials.';
+        this.cdr.detectChanges();
       }
     });
   }

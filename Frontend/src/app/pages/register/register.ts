@@ -1,6 +1,5 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { User } from '../../models/user';
 import { AuthService } from '../../services/auth-service';
 import { Router, RouterLink } from "@angular/router";
 
@@ -11,12 +10,17 @@ import { Router, RouterLink } from "@angular/router";
   styleUrl: './register.css',
 })
 export class Register {
-  
+
   registerForm: FormGroup;
   successMessage: string | null = null;
-  isSubmitting = false;
+  errorMessage: string | null = null;
 
-  constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) {
+  constructor(
+    private fb: FormBuilder,
+    private authService: AuthService,
+    private router: Router,
+    private cdr: ChangeDetectorRef   // ← add this
+  ) {
     this.registerForm = this.fb.group({
       username: ['', [Validators.required]],
       email: ['', [Validators.required, Validators.email]],
@@ -24,20 +28,26 @@ export class Register {
     });
   }
 
-onSubmit() {
-  const formValue = this.registerForm.value;
-  this.authService.register(formValue).subscribe({
-    next: (res: any) => {
-      console.log('Registration successful:', res);
-      this.successMessage = `Account created for ${res.userName}! Redirecting to login...`;
-      this.registerForm.reset();
+  onSubmit() {
+    this.errorMessage = null;
+    this.successMessage = null;
 
-      setTimeout(() => {
-          this.router.navigate(['/login']);
-        }, 2000);
-      
-    },
-    error: (err) => console.error('Registration error:', err)
-  });
-}
+    if (this.registerForm.invalid) {
+      this.registerForm.markAllAsTouched();
+      return;
+    }
+
+    this.authService.register(this.registerForm.value).subscribe({
+      next: (res: any) => {
+        this.successMessage = `Account created for ${res.username}! Redirecting to login...`;
+        this.registerForm.reset();
+        this.cdr.detectChanges();    // ← add this
+        setTimeout(() => this.router.navigate(['/login']), 2000);
+      },
+      error: (err) => {
+        this.errorMessage = err.error?.message || 'Registration failed. Please try again.';
+        this.cdr.detectChanges();
+      }
+    });
+  }
 }

@@ -48,4 +48,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, Object>> handleOtherExceptions(Exception ex) {
         return buildResponse("Internal server error", HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    @ExceptionHandler(DuplicateResourceException.class)
+    public ResponseEntity<Map<String, Object>> handleDuplicate(DuplicateResourceException ex) {
+        return buildResponse(ex.getMessage(), HttpStatus.CONFLICT);
+    }
 }

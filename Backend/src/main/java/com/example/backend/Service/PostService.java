@@ -103,4 +103,11 @@ public class PostService {
 
         postRepository.delete(post);
     }
+
+    public List<PostResponse> getPostsByUser(User user) {
+        return postRepository.findAllByUser(user)
+                .stream()
+                .map(post -> PostMapper.toResponse(post, getCurrentUserVote(post)))
+                .toList();
+    }
 }

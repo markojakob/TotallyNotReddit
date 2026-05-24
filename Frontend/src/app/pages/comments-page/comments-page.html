@@ -53,9 +53,12 @@
     </div>
 
     <div class="bg-base-100 p-4 rounded-lg shadow flex flex-col gap-2">
-      <textarea class="textarea textarea-bordered w-full" placeholder="Write a comment..."
-        [(ngModel)]="newCommentContent" rows="3">
-      </textarea>
+      <textarea class="textarea textarea-bordered w-full" [class.textarea-error]="commentError"
+        placeholder="Write a comment..." [(ngModel)]="newCommentContent" (ngModelChange)="commentError = ''" rows="3">
+  </textarea>
+      @if (commentError) {
+      <p class="text-error text-sm">{{ commentError }}</p>
+      }
       <button class="btn btn-primary self-end" (click)="submitComment()">Comment</button>
     </div>
 
@@ -97,5 +100,5 @@
     </div>
     <div class="modal-backdrop" (click)="cancelDeleteComment()"></div>
   </div>
-}
+  }
 </div>

@@ -8,6 +8,7 @@ import { CreatePost } from './pages/create-post/create-post';
 import { CreateSubreddit } from './pages/create-subreddit/create-subreddit';
 import { EditPost } from './pages/edit-post/edit-post';
 import { EditComment } from './pages/edit-comment/edit-comment';
+import { ProfilePage } from './pages/profile-page/profile-page';
 
 export const routes: Routes = [
   { path: '', component: Main },
@@ -16,6 +17,7 @@ export const routes: Routes = [
 
   { path: 'register', component: Register },
   { path: 'login', component: Login },
+  { path: 'profile', component: ProfilePage },
 
   { path: 'create-post', component: CreatePost },
   { path: 'create-subreddit', component: CreateSubreddit },
