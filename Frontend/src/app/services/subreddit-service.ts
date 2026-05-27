@@ -42,7 +42,7 @@ export class SubredditService {
     return this.http.delete<void>(`${this.baseApi}/${id}`);
   }
 
-  getPostsBySubreddit(name: string): Observable<Post[]> {
-  return this.http.get<Post[]>(`${this.baseApi}/${name}/posts`);
+  getPostsBySubreddit(name: string, sort: string = 'new'): Observable<Post[]> {
+  return this.http.get<Post[]>(`${this.baseApi}/${name}/posts?sort=${sort}`);
 }
 }

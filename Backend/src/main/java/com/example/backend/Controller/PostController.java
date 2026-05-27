@@ -77,4 +77,5 @@ public class PostController {
     public ResponseEntity<List<PostResponse>> searchPosts(@RequestParam String q) {
         return ResponseEntity.ok(postService.searchPosts(q));
     }
+
 }

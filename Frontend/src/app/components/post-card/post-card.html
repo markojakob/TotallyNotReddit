@@ -22,9 +22,12 @@
 
   <div class="flex-1 p-3 min-w-0">
     <div class="flex justify-between items-start">
-      <div class="text-xs text-gray-400 mb-1">
-        r/{{ post.subredditName || post.subredditId }}
+      <div class="text-xs text-gray-400 mb-1 flex items-center gap-1">
+        <span>r/{{ post.subredditName || post.subredditId }}</span>
+        <span>•</span>
+        <span>{{ timeAgo(post.createdAt) }}</span>
       </div>
+
 
       @if (isAuthor) {
       <div class="dropdown dropdown-end">

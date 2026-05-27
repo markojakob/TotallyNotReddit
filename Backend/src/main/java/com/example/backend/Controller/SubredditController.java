@@ -55,8 +55,10 @@ public class SubredditController {
     }
 
     @GetMapping("/{name}/posts")
-    public List<PostResponse> getPostsBySubreddit (@PathVariable String name) {
-        return postService.getPostsBySubreddit(name);
+    public List<PostResponse> getPostsBySubreddit(
+            @PathVariable String name,
+            @RequestParam(defaultValue = "new") String sort) {
+        return postService.getPostsBySubreddit(name, sort);
     }
 
     @PreAuthorize("isAuthenticated()")

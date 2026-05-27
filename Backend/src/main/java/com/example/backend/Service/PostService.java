@@ -11,6 +11,7 @@ import com.example.backend.Model.User;
 import com.example.backend.Repository.PostRepository;
 import com.example.backend.Repository.SubredditRepository;
 import com.example.backend.Repository.PostVoteRepository;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -54,12 +55,17 @@ public class PostService {
         return PostMapper.toResponse(post);
     }
 
-    public List<PostResponse> getPostsBySubreddit(String name) {
-        Subreddit subreddit = subredditRepository
-                .findByName(name)
+    public List<PostResponse> getPostsBySubreddit(String name, String sort) {
+        Subreddit subreddit = subredditRepository.findByName(name)
                 .orElseThrow(() -> new NotFoundException("Subreddit not found"));
 
-        return postRepository.findAllBySubreddit(subreddit)
+        Sort sorting = switch (sort) {
+            case "top" -> Sort.by(Sort.Direction.DESC, "score");
+            case "new" -> Sort.by(Sort.Direction.DESC, "createdAt");
+            default -> Sort.by(Sort.Direction.DESC, "createdAt");
+        };
+
+        return postRepository.findAllBySubreddit(subreddit, sorting)
                 .stream()
                 .map(post -> PostMapper.toResponse(post, getCurrentUserVote(post)))
                 .toList();
@@ -112,11 +118,15 @@ public class PostService {
                 .toList();
     }
 
+
+
     public List<PostResponse> searchPosts(String query) {
         return postRepository.searchByTitleOrContent(query)
                 .stream()
                 .map(post -> PostMapper.toResponse(post, getCurrentUserVote(post)))
                 .toList();
     }
+
+
 
 }

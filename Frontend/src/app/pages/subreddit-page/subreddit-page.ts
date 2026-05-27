@@ -1,5 +1,4 @@
 import { Component, OnInit, signal } from '@angular/core';
-import { Sidebar } from '../../components/sidebar/sidebar';
 import { ActivatedRoute } from '@angular/router';
 import { SubredditService } from '../../services/subreddit-service';
 import { Post } from '../../models/post';
@@ -7,10 +6,11 @@ import { PostCard } from '../../components/post-card/post-card';
 import { Subreddit } from '../../models/subreddit';
 import { SubredditSidebar } from '../../components/subreddit-sidebar/subreddit-sidebar';
 import { formatDate } from '../../utils/time.utils';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-subreddit',
-  imports: [PostCard, SubredditSidebar],
+  imports: [PostCard, SubredditSidebar, CommonModule],
   templateUrl: './subreddit-page.html',
   styleUrl: './subreddit-page.css',
 })
@@ -19,44 +19,41 @@ export class SubredditPage implements OnInit {
   loading = signal(false);
   subreddit = signal<Subreddit | null>(null);
   subredditName!: string;
-  constructor(private route: ActivatedRoute, private subredditService: SubredditService) { }
-  formatDate = formatDate
+  currentSort = 'new';
+  formatDate = formatDate;
+
+  constructor(private route: ActivatedRoute, private subredditService: SubredditService) {}
 
   ngOnInit() {
-  this.route.paramMap.subscribe(params => {
+    this.route.paramMap.subscribe(params => {
+      this.subredditName = params.get('subredditName') || '';
+      this.fetchPosts();
 
-    this.subredditName = params.get('subredditName') || '';
-
-    this.loading.set(true);
-
-    this.subredditService
-      .getPostsBySubreddit(this.subredditName)
-      .subscribe({
-        next: (posts) => {
-          this.posts.set(posts);
-          this.loading.set(false);
-        },
-        error: (err) => {
-          console.error('Failed to load posts', err);
-          this.loading.set(false);
-        }
+      this.subredditService.getByName(this.subredditName).subscribe({
+        next: (subreddit) => this.subreddit.set(subreddit),
+        error: (err) => console.error('Failed to load subreddit', err)
       });
-      
-      this.subredditService
-      .getByName(this.subredditName)
-      .subscribe({
-        next: (subreddit) => {
-          this.subreddit.set(subreddit);
-          this.loading.set(false);
-        },
-        error: (err) => {
-          console.error('Failed to load subreddit', err);
-          this.loading.set(false)
-        }
-      })
-  });
-}
+    });
+  }
 
+  fetchPosts() {
+    this.loading.set(true);
+    this.subredditService.getPostsBySubreddit(this.subredditName, this.currentSort).subscribe({
+      next: (posts) => {
+        this.posts.set(posts);
+        this.loading.set(false);
+      },
+      error: (err) => {
+        console.error('Failed to load posts', err);
+        this.loading.set(false);
+      }
+    });
+  }
+
+  setSort(sort: string) {
+    this.currentSort = sort;
+    this.fetchPosts();
+  }
 
   get subreddits() {
     return this.subredditService.subreddits();
