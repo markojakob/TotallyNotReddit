@@ -17,9 +17,11 @@
       }
     </div>
 
-    @if (loading()) {
-      <div>Loading posts...</div>
-    } @else if (posts().length === 0) {
+    @for (post of posts(); track post.id) {
+      <app-post-card [post]="post"></app-post-card>
+    }
+
+    @if (posts().length === 0 && !loading()) {
       @if (activeTab === 'foryou') {
         <div class="bg-base-100 p-6 rounded-lg shadow text-center text-gray-400">
           You haven't joined any communities yet.
@@ -28,10 +30,16 @@
       } @else {
         <div>No posts yet.</div>
       }
-    } @else {
-      @for (post of posts(); track post.id) {
-        <app-post-card [post]="post"></app-post-card>
-      }
+    }
+
+    <!-- Always in the DOM so ViewChild can find it -->
+    <div #scrollAnchor class="h-4"></div>
+
+    @if (loading()) {
+      <div class="text-center py-4 text-gray-400">Loading...</div>
+    }
+    @if (!hasMore() && posts().length > 0) {
+      <div class="text-center py-4 text-gray-400">That's all folks 👋</div>
     }
 
   </div>

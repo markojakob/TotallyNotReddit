@@ -4,11 +4,12 @@ import { Subreddit } from '../../models/subreddit';
 import { formatDate } from '../../utils/time.utils';
 import { AuthService } from '../../services/auth-service';
 import { SubredditService } from '../../services/subreddit-service';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-subreddit-sidebar',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './subreddit-sidebar.html',
 })
 

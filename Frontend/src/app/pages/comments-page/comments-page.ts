@@ -1,5 +1,5 @@
 import { Component, OnInit, ChangeDetectorRef, signal } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { PostService } from '../../services/PostService';
 import { Post } from '../../models/post';
 import { Sidebar } from "../../components/sidebar/sidebar";
@@ -19,7 +19,7 @@ import { SubredditSidebar } from '../../components/subreddit-sidebar/subreddit-s
 @Component({
   selector: 'app-comments-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, SubredditSidebar],
+  imports: [CommonModule, FormsModule, SubredditSidebar, RouterLink],
   templateUrl: './comments-page.html',
   styleUrl: './comments-page.css',
 })
@@ -144,6 +144,26 @@ export class CommentsPage implements OnInit {
       error: (err) => console.error('Delete comment failed:', err)
     });
   }
+
+  toggleJoin() {
+  const sub = this.subreddit;
+  if (!sub) return;
+
+  const action$ = sub.isJoined
+    ? this.subredditService.leaveSubreddit(sub.id)
+    : this.subredditService.joinSubreddit(sub.id);
+
+  action$.subscribe({
+    next: () => {
+      this.subreddit = {
+        ...sub,
+        isJoined: !sub.isJoined,
+        membersCount: (sub.membersCount ?? 0) + (sub.isJoined ? -1 : 1)
+      };
+      this.cdr.detectChanges();
+    }
+  });
+}
 
   voteComment(comment: CommentResponse, clickedValue: number): void {
     const currentVote = comment.currentUserVote ?? 0;

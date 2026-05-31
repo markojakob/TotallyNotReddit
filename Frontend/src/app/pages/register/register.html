@@ -1,53 +1,60 @@
 <div class="min-h-screen flex justify-center py-12">
-  <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-2 w-80 h-fit">
+  <div class="flex flex-col w-80 h-fit">
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-2 w-80 h-fit">
 
-    @if (successMessage) {
+      @if (successMessage) {
       <div class="alert alert-success">{{ successMessage }}</div>
-    }
+      }
 
-    <h1 class="text-xl font-bold text-center">Register</h1>
+      <h1 class="text-xl font-bold text-center">Register</h1>
 
-    <fieldset class="fieldset">
-      <legend class="fieldset-legend">Username</legend>
-      <input type="text" class="input input-sm w-full"
-        [class.input-error]="registerForm.get('username')?.invalid && registerForm.get('username')?.touched"
-        formControlName="username" />
-      @if (registerForm.get('username')?.invalid && registerForm.get('username')?.touched) {
+      <fieldset class="fieldset">
+        <legend class="fieldset-legend">Username</legend>
+        <input type="text" class="input input-sm w-full"
+          [class.input-error]="registerForm.get('username')?.invalid && registerForm.get('username')?.touched"
+          formControlName="username" />
+        @if (registerForm.get('username')?.invalid && registerForm.get('username')?.touched) {
         <p class="text-error text-xs mt-1">Username is required.</p>
-      }
-    </fieldset>
+        }
+      </fieldset>
 
-    <fieldset class="fieldset">
-      <legend class="fieldset-legend">Email</legend>
-      <input type="email" class="input input-sm w-full"
-        [class.input-error]="registerForm.get('email')?.invalid && registerForm.get('email')?.touched"
-        placeholder="example@gmail.com"
-        formControlName="email" />
-      @if (registerForm.get('email')?.hasError('required') && registerForm.get('email')?.touched) {
+      <fieldset class="fieldset">
+        <legend class="fieldset-legend">Email</legend>
+        <input type="email" class="input input-sm w-full"
+          [class.input-error]="registerForm.get('email')?.invalid && registerForm.get('email')?.touched"
+          placeholder="example@gmail.com" formControlName="email" />
+        @if (registerForm.get('email')?.hasError('required') && registerForm.get('email')?.touched) {
         <p class="text-error text-xs mt-1">Email is required.</p>
-      }
-      @if (registerForm.get('email')?.hasError('email') && registerForm.get('email')?.touched) {
+        }
+        @if (registerForm.get('email')?.hasError('email') && registerForm.get('email')?.touched) {
         <p class="text-error text-xs mt-1">Please enter a valid email.</p>
-      }
-    </fieldset>
+        }
+      </fieldset>
 
-    <fieldset class="fieldset">
-      <legend class="fieldset-legend">Password</legend>
-      <input type="password" class="input input-sm w-full"
-        [class.input-error]="registerForm.get('password')?.invalid && registerForm.get('password')?.touched"
-        formControlName="password" />
-      @if (registerForm.get('password')?.hasError('required') && registerForm.get('password')?.touched) {
+      <fieldset class="fieldset">
+        <legend class="fieldset-legend">Password</legend>
+        <input type="password" class="input input-sm w-full"
+          [class.input-error]="registerForm.get('password')?.invalid && registerForm.get('password')?.touched"
+          formControlName="password" />
+        @if (registerForm.get('password')?.hasError('required') && registerForm.get('password')?.touched) {
         <p class="text-error text-xs mt-1">Password is required.</p>
-      }
-      @if (registerForm.get('password')?.hasError('minlength') && registerForm.get('password')?.touched) {
+        }
+        @if (registerForm.get('password')?.hasError('minlength') && registerForm.get('password')?.touched) {
         <p class="text-error text-xs mt-1">Password must be at least 6 characters.</p>
-      }
-    </fieldset>
+        }
+      </fieldset>
 
-    <button class="btn btn-primary btn-sm">Register</button>
+      <button class="btn btn-primary btn-sm">Register</button>
 
-    @if (errorMessage) {
+      @if (errorMessage) {
       <p class="text-error text-sm text-center mt-1">{{ errorMessage }}</p>
-    }
-  </form>
+      }
+    </form>
+    <p class="text-xs text-center text-gray-500 mt-2">
+      Already have an account?
+      <a routerLink="/login" class="text-primary hover:underline font-semibold cursor-pointer">
+        Login here
+      </a>
+    </p>
+  </div>
 </div>

@@ -12,7 +12,9 @@
       <div class="bg-base-100 p-4 rounded-lg shadow">
         @if (post) {
         <div class="text-xs text-gray-400 mb-2 flex items-center gap-2">
-          <span>r/{{ post.subredditName || post.subredditId }}</span>
+          <a [routerLink]="['/r', post.subredditName || post.subredditId]" class="hover:underline cursor-pointer">
+            r/{{ post.subredditName || post.subredditId }}
+          </a>
           <span>•</span>
           <span>Posted by u/{{ post.username || 'anonymous' }}</span>
           <span>•</span>
@@ -117,7 +119,7 @@
 
     <div class="w-80 hidden xl:flex flex-col gap-4">
       @if (subreddit) {
-      <app-subreddit-sidebar [subreddit]="subreddit" />
+      <app-subreddit-sidebar [subreddit]="subreddit" (joinToggled)="toggleJoin()" />
       }
     </div>
   </div>

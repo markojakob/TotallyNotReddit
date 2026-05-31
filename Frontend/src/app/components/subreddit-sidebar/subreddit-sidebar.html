@@ -1,6 +1,10 @@
 <div class="flex flex-col gap-4">
   <div class="bg-base-100 shadow rounded-lg p-4">
-    <h2 class="font-bold mb-3">{{ title || 'About r/' + subreddit.name }}</h2>
+    <a [routerLink]="['/r', subreddit.name]" 
+   class="font-bold mb-3 hover:underline cursor-pointer block">
+  {{ title || 'r/' + subreddit.name }}
+</a>
+    
     <p class="text-sm text-gray-400 mb-4">{{ subreddit.description || 'No description.' }}</p>
 
     <div class="flex flex-col gap-2 text-sm text-gray-400 mb-4">

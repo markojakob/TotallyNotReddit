@@ -10,16 +10,16 @@
                     <path d="m21 21-4.3-4.3"></path>
                 </g>
             </svg>
-            <input type="search" class="grow" placeholder="Search"
-                [(ngModel)]="searchQuery"
+            <input type="search" class="grow" placeholder="Search" [(ngModel)]="searchQuery"
                 (keydown.enter)="submitSearch()" />
         </label>
     </div>
     <div class="flex gap-2 mr-2">
         @if (!authService.isAuthenticated()) {
-            <a routerLink="/login" class="btn btn-primary btn-sm">Login</a>
+        <a routerLink="/login" class="btn btn-primary btn-sm">Login</a>
         }
     </div>
+    @if (authService.isAuthenticated()) {
     <div class="flex-none">
         <div class="dropdown dropdown-end">
             <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
@@ -28,14 +28,13 @@
                         src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" />
                 </div>
             </div>
-            <ul tabindex="-1" class="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow">
-                <li><a routerLink="/profile" class="justify-between m-1">Profile</a></li>
-                <li>
-                    @if (authService.isAuthenticated()) {
-                        <div class="btn btn-error" (click)="authService.logout()">Logout</div>
-                    }
-                </li>
+            <ul tabindex="0" class="menu menu-sm dropdown-content bg-base-100 rounded-box z-10 mt-3 w-52 p-2 shadow">
+
+                <li><a routerLink="/profile" class="justify-between">Profile</a></li>
+                <li><a class="text-error" (click)="authService.logout()">Logout</a></li>
+
             </ul>
         </div>
     </div>
+    }
 </div>
