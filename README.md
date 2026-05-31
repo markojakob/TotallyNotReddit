@@ -1,8 +1,7 @@
-# TotallyNotReddit 
-A Reddit clone app. Built with Spring Boot and Angular using postgresql database.
+# TotallyNotReddit
+A Reddit clone app. Built with Spring Boot and Angular using PostgreSQL.
 
 # 🛠️ Tech Stack
-
 **Frontend**
 * Angular (v16+)
 * TypeScript
@@ -14,8 +13,7 @@ A Reddit clone app. Built with Spring Boot and Angular using postgresql database
 
 **Database**
 * PostgreSQL (running in Docker)
-* You can view the full visual ER diagram on DBdiagram.io:
-(https://dbdiagram.io/d/699b4006bd82f5fce26fd02b)
+* [View the ER diagram on DBdiagram.io](https://dbdiagram.io/d/699b4006bd82f5fce26fd02b)
 
 **Build Tools**
 * Maven
@@ -25,82 +23,65 @@ A Reddit clone app. Built with Spring Boot and Angular using postgresql database
 
 # 🚀 Getting Started
 
-## 1. Prerequisites
+## Prerequisites
 Ensure you have the following installed:
-* Java JDK 17+
+* Docker & Docker Desktop
 * Node.js (LTS version)
 * Angular CLI
-* Docker & Docker Desktop
 
 ---
 
-## 2. Database Setup (Docker)
-We use Docker to spin up the PostgreSQL instance instantly.
+## 1. Clone & Setup Environment
 
-1. Locate the `docker-compose.yml` file in the root directory.
-2. Run the following command:
+Navigate to the `/Backend` folder and run the setup script to generate your `.env`:
+
 ```bash
-docker-compose up -d
-```
-This will start Postgres on `localhost:5432` with the credentials defined in your compose file.
-
----
-
-## 3. Environment Variables
-The backend requires a `.env` file in the `/Backend` directory.
-
-1. Copy the example file:
-```bash
-cp .env.example .env
+cd Backend
+./setup.sh
 ```
 
-2. Generate a secure JWT secret:
-```bash
-openssl rand -base64 32
-```
-
-3. Paste the output into your `.env` file:
-```
-JWT_SECRET=<your_generated_secret>
-DB_PASSWORD=your_db_password
-DB_URL=jdbc:postgresql://localhost:5432/redditdb
-DB_USERNAME=postgres
-```
+This automatically generates a secure JWT secret and creates the required `.env` file.
 
 > ⚠️ Never commit your `.env` file to version control. It is listed in `.gitignore`.
 
 ---
 
-## 4. Backend Setup (Spring Boot)
-1. Navigate to the `/Backend` folder.
-2. Run the application:
+## 2. Start the Backend & Database (Docker)
+
+From the `/Backend` folder:
+
 ```bash
-./mvnw spring-boot:run
+docker compose up --build
 ```
+
+This starts both PostgreSQL and the Spring Boot backend. No Java installation required.
+
+* Backend runs on `http://localhost:8081`
+* PostgreSQL runs on `localhost:5432`
 
 ---
 
-## 5. Frontend Setup (Angular)
-1. Navigate to the `/frontend` folder.
-2. Install dependencies:
+## 3. Start the Frontend (Angular)
+
+In a separate terminal, navigate to the `/frontend` folder:
+
 ```bash
 npm install
-```
-3. Start the development server:
-```bash
 ng serve
 ```
-4. Navigate to:
-```
-http://localhost:4200/
-```
+
+Navigate to `http://localhost:4200/`
 
 ---
 
 # 📁 Project Structure
 ```
 root/
-├── backend/
+├── Backend/
+│   ├── Dockerfile
+│   ├── compose.yaml
+│   ├── setup.sh
+│   └── src/
 ├── frontend/
 └── README.md
 ```
@@ -108,24 +89,9 @@ root/
 ---
 
 # 🧪 Development Notes
-* Backend runs on default Spring Boot port `8081`
-* Frontend runs on `4200`
-* PostgreSQL runs on `5432`
-* On first run, the backend will automatically seed the database 
-with sample users, subreddits, posts, and comments.
-Login with any seeded user or create a new user
-
----
-
-# 📦 Build for Production
-
-## Backend
-```bash
-./mvnw clean package
-```
-
-## Frontend
-```bash
-ng build --configuration production
-```
+* Backend runs on port `8081`
+* Frontend runs on port `4200`
+* PostgreSQL runs on port `5432`
+* On first run, the backend automatically seeds the database with sample users, subreddits, posts, and comments.
+* Login with any seeded user or create a new account.
 
