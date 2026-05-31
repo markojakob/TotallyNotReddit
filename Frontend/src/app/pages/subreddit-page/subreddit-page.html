@@ -11,6 +11,12 @@
           <span>{{ subreddit()!.isPrivate ? 'Private' : 'Public' }}</span>
           <span>{{ subreddit()!.membersCount ?? 0 }} Members</span>
           <span>{{ subreddit()!.createdAt ? formatDate(subreddit()!.createdAt) : '' }}</span>
+          @if (authService.isAuthenticated()) {
+          <button class="btn btn-sm mt-2" [class.btn-primary]="!subreddit()!.isJoined"
+            [class.btn-outline]="subreddit()!.isJoined" (click)="toggleJoin()">
+            {{ subreddit()!.isJoined ? 'Leave' : 'Join' }}
+          </button>
+          }
         </div>
         @if (subreddit()!.rules) {
         <div class="mt-3">
@@ -50,7 +56,7 @@
 
     <div class="w-80 hidden xl:block flex-shrink-0">
       @if (subreddit()) {
-      <app-subreddit-sidebar [subreddit]="subreddit()!" title="About Community" />
+      <app-subreddit-sidebar [subreddit]="subreddit()!" title="About Community" (joinToggled)="toggleJoin()" />
       }
     </div>
 

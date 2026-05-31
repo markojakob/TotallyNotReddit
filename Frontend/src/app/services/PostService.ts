@@ -20,6 +20,10 @@ export class PostService {
     return this.http.get<Post[]>(this.baseApi);
   }
 
+  getForYouFeed(): Observable<Post[]> {
+  return this.http.get<Post[]>(`${environment.apiUrl}/api/posts/feed`);
+}
+
 getById(id: number): Observable<Post> {
   return this.http.get<Post>(`${this.baseApi}/${id}`);
 }

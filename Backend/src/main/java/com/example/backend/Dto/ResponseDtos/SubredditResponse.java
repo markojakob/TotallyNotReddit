@@ -12,11 +12,14 @@ public class SubredditResponse {
     private String createdByUsername;
     private LocalDateTime createdAt;
     private int membersCount;
+    private boolean isJoined;
+
+
 
     public SubredditResponse(Long id, String name, String description,
                              String rules, Boolean isPrivate,
                              Long createdById, String createdByUsername,
-                             LocalDateTime createdAt, int membersCount) {
+                             LocalDateTime createdAt, int membersCount, Boolean isJoined) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -26,6 +29,7 @@ public class SubredditResponse {
         this.createdByUsername = createdByUsername;
         this.createdAt = createdAt;
         this.membersCount = membersCount;
+        this.isJoined = isJoined;
     }
 
     public Long getId() { return id; }
@@ -47,4 +51,6 @@ public class SubredditResponse {
 
     public int getMembersCount() { return membersCount; }
     public void setMembersCount(int membersCount) { this.membersCount = membersCount; }
+    public boolean getIsJoined() { return isJoined; }
+    public void setIsJoined(boolean isJoined) { this.isJoined = isJoined; }
 }

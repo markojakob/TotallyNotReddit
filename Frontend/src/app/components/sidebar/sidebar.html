@@ -45,16 +45,18 @@
     </a>
 
     @if (!collapsed) {
-      <div class="bg-base-100 shadow-md rounded-lg p-4 flex flex-col gap-4 mt-2">
-        <h2 class="text-lg font-semibold text-gray-500">TRENDING</h2>
-        <ul class="flex flex-col gap-2 text-gray-200">
-          @for (subreddit of subreddits; track $index) {
-            <li>
-              <a routerLink="/r/{{ subreddit.name }}">r/{{ subreddit.name }}</a>
-            </li>
-          }
-        </ul>
-      </div>
-    }
+  <div class="bg-base-100 shadow-md rounded-lg p-4 flex flex-col gap-4 mt-2">
+    <h2 class="text-lg font-semibold text-gray-500">
+      COMMUNITIES
+    </h2>
+    <ul class="flex flex-col gap-2 text-gray-200">
+      @for (subreddit of displayedSubreddits; track subreddit.id) {
+        <li>
+          <a routerLink="/r/{{ subreddit.name }}">r/{{ subreddit.name }}</a>
+        </li>
+      }
+    </ul>
+  </div>
+}
   </div>
 </div>

@@ -2,6 +2,7 @@ package com.example.backend.Service;
 
 import com.example.backend.Dto.RequestDtos.CommentVoteRequest;
 import com.example.backend.Dto.ResponseDtos.VoteResult;
+import com.example.backend.Exception.BadRequestException;
 import com.example.backend.Exception.NotFoundException;
 import com.example.backend.Model.Comment;
 import com.example.backend.Model.CommentVote;
@@ -34,8 +35,14 @@ public class CommentVoteService {
         int voteValue = request.getVoteValue();
         int returnedVoteValue;
 
+        if (voteValue != -1 && voteValue != 0 && voteValue != 1) {
+            throw new BadRequestException("Invalid vote value");
+        }
+
         if (existingVote.isPresent()) {
             CommentVote oldVote = existingVote.get();
+
+
             if (voteValue == 0 || oldVote.getVoteValue() == voteValue) {
                 commentVoteRepository.delete(oldVote);
                 returnedVoteValue = 0;

@@ -68,6 +68,10 @@ public class UserService {
         }
         existing.setEmail(request.getEmail());
 
+        if (request.getPassword() != null && !request.getPassword().isBlank()) {
+            existing.setPasswordHash(passwordEncoder.encode(request.getPassword()));
+        }
+
         userRepository.save(existing);
         return UserMapper.toResponse(existing);
     }

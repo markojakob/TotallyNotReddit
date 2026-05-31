@@ -33,6 +33,12 @@ public class PostController {
         return ResponseEntity.ok(postService.getAllPosts());
     }
 
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/feed")
+    public ResponseEntity<List<PostResponse>> getForYouFeed() {
+        User user = authService.getCurrentUser();
+        return ResponseEntity.ok(postService.getPostsForUser(user));
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<PostResponse> getPost(@PathVariable Long id) {

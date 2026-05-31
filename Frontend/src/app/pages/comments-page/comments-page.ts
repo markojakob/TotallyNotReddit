@@ -30,7 +30,7 @@ export class CommentsPage implements OnInit {
   comments: CommentResponse[] = [];
   newCommentContent = '';
   currentUserVote = signal<number>(0);
-  currentUsername = localStorage.getItem('username') ?? '';
+  currentUsername = '';
   commentToDelete: CommentResponse | null = null;
   commentError = '';
   commentVotes = new Map<number, number>();
@@ -48,7 +48,9 @@ export class CommentsPage implements OnInit {
     private voteService: VoteService,
     private router: Router,
     private subredditService: SubredditService,
-  ) { }
+  ) {
+    this.currentUsername = this.authService.getUsername() ?? '';
+  }
 
   ngOnInit() {
     this.route.paramMap.pipe(take(1)).subscribe(params => {

@@ -17,3 +17,5 @@ databaseChangeLog:
       file: db/changelog/008-add-created-at-to-comment-votes.yaml
   - include:
       file: db/changelog/009-add-created-at-to-post-votes.yaml
+  - include:
+      file: db/changelog/010-create-subreddit-members.yaml

@@ -1,16 +1,38 @@
-<div class="flex min-h-screen">
+<div class="flex-1 flex justify-center">
+  <div class="feed flex flex-col gap-4 max-w-2xl w-full p-4">
 
-  <div class="flex-1 flex justify-center">
-    <div class="feed flex flex-col gap-4 max-w-2xl w-full p-4">
-      @if (loading()) {
-      <div>Loading posts...</div>
-      } @else if (posts().length === 0) {
-      <div>No posts yet.</div>
-      } @else {
-      @for (post of posts(); track post.id) {
-      <app-post-card [post]="post"></app-post-card>
-      }
+    <!-- Feed tabs -->
+    <div class="flex gap-2">
+      <button class="btn btn-sm"
+        [class.btn-primary]="activeTab === 'popular'"
+        (click)="setTab('popular')">
+        🔥 Popular
+      </button>
+      @if (authService.isAuthenticated()) {
+        <button class="btn btn-sm"
+          [class.btn-primary]="activeTab === 'foryou'"
+          (click)="setTab('foryou')">
+          ✨ For You
+        </button>
       }
     </div>
+
+    @if (loading()) {
+      <div>Loading posts...</div>
+    } @else if (posts().length === 0) {
+      @if (activeTab === 'foryou') {
+        <div class="bg-base-100 p-6 rounded-lg shadow text-center text-gray-400">
+          You haven't joined any communities yet.
+          <a routerLink="/r/programming" class="text-primary ml-1">Explore communities</a>
+        </div>
+      } @else {
+        <div>No posts yet.</div>
+      }
+    } @else {
+      @for (post of posts(); track post.id) {
+        <app-post-card [post]="post"></app-post-card>
+      }
+    }
+
   </div>
 </div>

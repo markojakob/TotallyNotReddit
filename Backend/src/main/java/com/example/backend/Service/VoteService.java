@@ -2,6 +2,7 @@ package com.example.backend.Service;
 
 import com.example.backend.Dto.RequestDtos.PostVoteRequest;
 import com.example.backend.Dto.ResponseDtos.VoteResult;
+import com.example.backend.Exception.BadRequestException;
 import com.example.backend.Exception.NotFoundException;
 import com.example.backend.Model.Post;
 import com.example.backend.Model.User;
@@ -32,6 +33,10 @@ public class VoteService {
         Optional<PostVote> existingVote = postVoteRepository.findByUserAndPost(user, post);
         int voteValue = request.getVoteValue();
         int returnedVoteValue;
+
+        if (voteValue != -1 && voteValue != 0 && voteValue != 1) {
+            throw new BadRequestException("Invalid vote value");
+        }
 
         if (existingVote.isPresent()) {
             PostVote oldPostVote = existingVote.get();

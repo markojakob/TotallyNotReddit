@@ -82,4 +82,26 @@ public class SubredditController {
     public ResponseEntity<List<SubredditResponse>> searchSubreddits(@RequestParam String q) {
         return ResponseEntity.ok(subredditService.searchSubreddits(q));
     }
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/{id}/join")
+    public ResponseEntity<Void> join(@PathVariable Long id) {
+        User user = authService.getCurrentUser();
+        subredditService.joinSubreddit(id, user);
+        return ResponseEntity.ok().build();
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/{id}/leave")
+    public ResponseEntity<Void> leave(@PathVariable Long id) {
+        User user = authService.getCurrentUser();
+        subredditService.leaveSubreddit(id, user);
+        return ResponseEntity.ok().build();
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/joined")
+    public ResponseEntity<List<SubredditResponse>> getJoined() {
+        User user = authService.getCurrentUser();
+        return ResponseEntity.ok(subredditService.getJoinedSubreddits(user));
+    }
 }

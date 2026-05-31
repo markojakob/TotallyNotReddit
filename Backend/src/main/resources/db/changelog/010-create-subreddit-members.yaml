@@ -1,0 +1,51 @@
+databaseChangeLog:
+  - changeSet:
+      id: 010-create-subreddit-members
+      author: markj
+      preConditions:
+        - onFail: MARK_RAN
+          not:
+            tableExists:
+              tableName: subreddit_members
+      changes:
+        - createTable:
+            tableName: subreddit_members
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: subreddit_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: joined_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: subreddit_members
+            baseColumnNames: user_id
+            referencedTableName: users
+            referencedColumnNames: id
+            constraintName: fk_member_user
+        - addForeignKeyConstraint:
+            baseTableName: subreddit_members
+            baseColumnNames: subreddit_id
+            referencedTableName: subreddits
+            referencedColumnNames: id
+            constraintName: fk_member_subreddit
+        - addUniqueConstraint:
+            tableName: subreddit_members
+            columnNames: user_id, subreddit_id
+            constraintName: uq_member_user_subreddit

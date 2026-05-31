@@ -6,6 +6,7 @@ import { LoginPromptModal } from './components/login-prompt/login-prompt';
 import { LoginPromptService } from './services/login-prompt-service';
 import { SidebarService } from './utils/SidebarService';
 import { SubredditService } from './services/subreddit-service';
+import { AuthService } from './services/auth-service';
 
 
 @Component({
@@ -17,10 +18,13 @@ import { SubredditService } from './services/subreddit-service';
 export class App implements OnInit {
   protected readonly title = signal('Frontend');
   constructor(public loginPromptService: LoginPromptService, public router: Router,
-    public sidebarService: SidebarService, public subredditService: SubredditService) { }
+    public sidebarService: SidebarService, public subredditService: SubredditService, private authService: AuthService) { }
 
   ngOnInit(): void {
     this.subredditService.fetchSubreddits();
+    if (this.authService.isAuthenticated()) {
+      this.subredditService.fetchJoinedSubreddits();
+    }
   }
 }
 

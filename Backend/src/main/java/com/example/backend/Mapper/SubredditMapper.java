@@ -17,7 +17,7 @@ public class SubredditMapper {
         return subreddit;
     }
 
-    public static SubredditResponse toResponse(Subreddit subreddit) {
+    public static SubredditResponse toResponse(Subreddit subreddit, int membersCount, boolean isJoined) {
         return new SubredditResponse(
                 subreddit.getId(),
                 subreddit.getName(),
@@ -27,7 +27,13 @@ public class SubredditMapper {
                 subreddit.getCreatedBy() != null ? subreddit.getCreatedBy().getId() : null,
                 subreddit.getCreatedBy() != null ? subreddit.getCreatedBy().getUsername() : null,
                 subreddit.getCreatedAt(),
-                subreddit.getPosts().size()
+                membersCount,
+                isJoined
         );
+    }
+
+    // Keep old one for backwards compat, defaults isJoined to false
+    public static SubredditResponse toResponse(Subreddit subreddit) {
+        return toResponse(subreddit, subreddit.getPosts().size(), false);
     }
 }

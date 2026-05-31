@@ -21,6 +21,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Query("SELECT p FROM Post p WHERE LOWER(p.title) LIKE LOWER(CONCAT('%', :query, '%')) OR LOWER(p.content) LIKE LOWER(CONCAT('%', :query, '%'))")
     List<Post> searchByTitleOrContent(@Param("query") String query);
 
-
+    List<Post> findAllBySubredditIn(List<Subreddit> subreddits);
 
 }

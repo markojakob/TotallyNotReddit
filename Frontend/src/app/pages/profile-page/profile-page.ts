@@ -34,7 +34,7 @@ export class ProfilePage implements OnInit {
       return;
     }
 
-    this.username = localStorage.getItem('username') ?? '';
+    this.username = this.authService.getUsername() ?? '';
     this.subredditService.fetchSubreddits();
 
     this.postService.listPosts().subscribe({

@@ -61,10 +61,9 @@ public class AuthService {
     public User getCurrentUser() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
-        if (auth == null || !auth.isAuthenticated() || auth.getPrincipal() == "anonymousUser") {
+        if (auth == null || !auth.isAuthenticated() || "anonymousUser".equals(auth.getPrincipal())) {
             throw new UnauthorizedException("No authenticated user found");
         }
-
         return (User) auth.getPrincipal();
     }
 

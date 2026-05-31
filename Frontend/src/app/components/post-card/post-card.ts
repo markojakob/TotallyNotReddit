@@ -20,8 +20,8 @@ export class PostCard implements OnInit {
   @Input({ required: true }) post!: Post;
   currentUserVote = signal<number>(0);
   showDeleteConfirm = false;
-  timeAgo = timeAgo
-
+  timeAgo = timeAgo;
+  
   constructor(
     private voteService: VoteService,
     private postService: PostService,
@@ -49,7 +49,7 @@ export class PostCard implements OnInit {
   }
 
   get isAuthor(): boolean {
-    const username = localStorage.getItem('username');
+    const username = this.authService.getUsername() ?? '';
     return !!username && username === this.post.username;
   }
 

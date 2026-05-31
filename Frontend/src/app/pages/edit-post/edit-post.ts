@@ -20,7 +20,7 @@ export class EditPost implements OnInit {
   content = '';
   submitting = false;
   error = '';
-  mediaUrl = ''
+  mediaUrl = '';
 
   constructor(
     private route: ActivatedRoute,
@@ -44,7 +44,7 @@ export class EditPost implements OnInit {
         this.postId = +id;
         this.postService.getById(this.postId).subscribe({
           next: (post) => {
-            const username = localStorage.getItem('username');
+            const username = this.authService.getUsername();
             if (post.username !== username) {
               this.router.navigate(['/']);
               return;

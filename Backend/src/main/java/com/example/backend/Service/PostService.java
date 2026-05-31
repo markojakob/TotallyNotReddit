@@ -9,10 +9,12 @@ import com.example.backend.Model.Post;
 import com.example.backend.Model.Subreddit;
 import com.example.backend.Model.User;
 import com.example.backend.Repository.PostRepository;
+import com.example.backend.Repository.SubredditMemberRepository;
 import com.example.backend.Repository.SubredditRepository;
 import com.example.backend.Repository.PostVoteRepository;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -23,15 +25,17 @@ public class PostService {
     private final SubredditRepository subredditRepository;
     private final PostVoteRepository postVoteRepository;
     private final AuthService authService;
+    private final SubredditMemberRepository memberRepository;
 
     public PostService(PostRepository postRepository,
                        SubredditRepository subredditRepository,
                        PostVoteRepository postVoteRepository,
-                       AuthService authService) {
+                       AuthService authService, SubredditMemberRepository memberRepository) {
         this.postRepository = postRepository;
         this.subredditRepository = subredditRepository;
         this.postVoteRepository = postVoteRepository;
         this.authService = authService;
+        this.memberRepository = memberRepository;
     }
 
     private Integer getCurrentUserVote(Post post) {
@@ -113,6 +117,17 @@ public class PostService {
 
     public List<PostResponse> getPostsByUser(User user) {
         return postRepository.findAllByUser(user)
+                .stream()
+                .map(post -> PostMapper.toResponse(post, getCurrentUserVote(post)))
+                .toList();
+    }
+
+    @Transactional
+    public List<PostResponse> getPostsForUser(User user) {
+        List<Subreddit> joinedSubreddits = memberRepository.findSubredditsByUser(user);
+        if (joinedSubreddits.isEmpty()) return List.of();
+
+        return postRepository.findAllBySubredditIn(joinedSubreddits)
                 .stream()
                 .map(post -> PostMapper.toResponse(post, getCurrentUserVote(post)))
                 .toList();
