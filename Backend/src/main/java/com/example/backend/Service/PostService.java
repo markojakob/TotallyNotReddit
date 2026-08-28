@@ -51,7 +51,7 @@ public class PostService {
 
     public PostResponse createPost(CreatePostRequest request, User author) {
         Subreddit subreddit = subredditRepository.findById(request.getSubredditId())
-                .orElseThrow(() -> new RuntimeException("Subreddit not found"));
+                .orElseThrow(() -> new NotFoundException("Subreddit not found"));
 
         Post post = PostMapper.fromRequest(request, author, subreddit);
         postRepository.save(post);
